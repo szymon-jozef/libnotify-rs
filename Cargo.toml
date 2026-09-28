@@ -1,0 +1,10 @@
+[package]
+name = "libnotify-rs"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+[build-dependencies]
+pkg-config = "0.3.34"
+bindgen = "0.73.2"
