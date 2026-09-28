@@ -13,7 +13,7 @@ pub enum Urgency {
 pub enum ClosedReason {
     Unset,
     Expired,
-    ApiReqest,
+    ApiRequest,
     Undefined,
 }
 
@@ -53,6 +53,58 @@ impl<'a> Notification {
 
         Ok(Self { inner })
     }
+
+    pub fn add_action<F>(
+        &mut self,
+        action: &str,
+        label: &str,
+        callback: F,
+    ) -> Result<(), Box<dyn std::error::Error>>
+    where
+        F: Fn(&str) + 'static,
+    {
+        let action = std::ffi::CString::new(action)?;
+        let label = std::ffi::CString::new(label)?;
+
+        let callback: Box<F> = Box::new(callback);
+        let user_data = Box::into_raw(callback) as *mut std::ffi::c_void;
+
+        let free_func = drop_box::<F>;
+
+        unsafe {
+            notify_notification_add_action(
+                self.inner,
+                action.as_ptr(),
+                label.as_ptr(),
+                Some(action_trampoline::<F>),
+                user_data,
+                Some(free_func),
+            );
+        }
+
+        Ok(())
+    }
+}
+
+unsafe extern "C" fn action_trampoline<F>(
+    _notification: *mut NotifyNotification,
+    action: *mut ::std::os::raw::c_char,
+    user_data: gpointer,
+) where
+    F: Fn(&str) + 'static,
+{
+    let callback = unsafe { &*(user_data as *const F) };
+
+    if action.is_null() {
+        return;
+    }
+
+    let action = unsafe { std::ffi::CStr::from_ptr(action).to_string_lossy() };
+    callback(&action);
+}
+
+unsafe extern "C" fn drop_box<F>(data: gpointer) {
+    unsafe { drop(Box::from_raw(data as *mut F)) };
 }
 
 #[cfg(test)]
