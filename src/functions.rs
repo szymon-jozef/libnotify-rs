@@ -25,3 +25,11 @@ where
 
     Ok(result)
 }
+
+/// Uninitializes libnotify.
+/// This should be called when the program no longer needs libnotify for the rest of its lifecycle, typically just before exitting.
+pub fn uninit() {
+    unsafe {
+        notify_uninit();
+    }
+}
