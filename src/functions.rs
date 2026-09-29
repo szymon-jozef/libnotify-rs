@@ -169,8 +169,13 @@ pub fn set_app_name(app_name: &str) -> Result<(), Box<dyn std::error::Error>> {
 
 /// Sets the application icon.
 /// Available since: 0.8.4
-pub fn set_app_icon(app_icon: &str) {
-    todo!();
+///
+/// app_icon is icon name or path to an image
+pub fn set_app_icon(app_icon: &str) -> Result<(), Box<dyn std::error::Error>> {
+    let app_icon_c = std::ffi::CString::new(app_icon)?;
+    unsafe { notify_set_app_icon(app_icon_c.as_ptr()) };
+
+    Ok(())
 }
 
 #[cfg(test)]
