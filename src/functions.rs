@@ -67,8 +67,8 @@ pub fn get_app_name() -> Option<String> {
     }
 }
 
-// Gets the application icon registered.
-// Available since: 0.8.4
+/// Gets the application icon registered.
+/// Available since: 0.8.4
 pub fn get_app_icon() -> Option<String> {
     let app_icon_c: *const std::os::raw::c_char = unsafe { notify_get_app_icon() };
 
@@ -122,13 +122,13 @@ pub fn get_server_caps() -> Option<Vec<String>> {
 
 pub struct ServerInfo {
     /// A location to store the server name, or `None`
-    name: Option<String>,
+    pub name: Option<String>,
     /// A location to store the server vendor, or `None`
-    vendor: Option<String>,
+    pub vendor: Option<String>,
     /// A location to store the server version, or `None`
-    version: Option<String>,
+    pub version: Option<String>,
     /// A location to store the version the service is compliant with, or `None`
-    spec_version: Option<String>,
+    pub spec_version: Option<String>,
 }
 
 /// Queries the server for information.
