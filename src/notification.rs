@@ -107,7 +107,30 @@ impl<'a> Notification {
 
     /// Synchronously tells the notification server to hide the notification on the screen
     pub fn close(&self) -> Result<(), Box<dyn std::error::Error>> {
-        todo!();
+        let mut gerror = std::ptr::null_mut() as *mut GError;
+
+        if unsafe { notify_notification_close(self.inner, &mut gerror) } == 0 {
+            if gerror.is_null() {
+                return Err("Unknown error".into());
+            }
+
+            let e = unsafe { *gerror }.message;
+
+            if e.is_null() {
+                unsafe { g_error_free(gerror) };
+                return Err("Unknown error".into());
+            }
+
+            let e_str = unsafe { std::ffi::CStr::from_ptr(e) }
+                .to_string_lossy()
+                .to_string();
+
+            unsafe { g_error_free(gerror) };
+
+            return Err(e_str.into());
+        }
+
+        Ok(())
     }
 
     /// Returns the closed reason code for the notification.
