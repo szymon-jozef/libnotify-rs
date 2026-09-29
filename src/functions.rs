@@ -183,6 +183,7 @@ pub fn set_app_icon(app_icon: &str) -> Result<(), Box<dyn std::error::Error>> {
 }
 
 #[cfg(test)]
+#[serial_test::serial]
 mod tests {
     use super::*;
 

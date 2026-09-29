@@ -6,3 +6,6 @@ edition = "2024"
 [build-dependencies]
 pkg-config = "0.3.34"
 bindgen = "0.73.2"
+
+[dependencies]
+serial_test = "4.0.1"
