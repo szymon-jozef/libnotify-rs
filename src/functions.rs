@@ -67,8 +67,39 @@ pub fn get_app_icon() -> Option<String> {
 
 /// Queries the server capabilities.
 /// Synchronously queries the server for its capabilities and returns them in a list.
-pub fn get_server_caps() -> Vec<String> {
-    todo!()
+pub fn get_server_caps() -> Option<Vec<String>> {
+    let mut vec: Vec<String> = vec![];
+
+    let list = unsafe { notify_get_server_caps() };
+    if list.is_null() {
+        return None;
+    }
+
+    let mut current = list;
+
+    loop {
+        let data = unsafe { *current }.data;
+        let data_char = data as *const std::os::raw::c_char;
+
+        if !data.is_null() {
+            let s: String = unsafe { std::ffi::CStr::from_ptr(data_char) }
+                .to_string_lossy()
+                .to_string();
+            vec.push(s);
+        }
+
+        unsafe { g_free(data) };
+
+        if unsafe { *current }.next.is_null() {
+            break;
+        }
+
+        current = unsafe { *current }.next;
+    }
+
+    unsafe { g_list_free(list) };
+
+    if vec.is_empty() { None } else { Some(vec) }
 }
 
 pub struct ServerInfo {
