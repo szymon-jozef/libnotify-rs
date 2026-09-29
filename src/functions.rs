@@ -116,7 +116,43 @@ pub struct ServerInfo {
 /// Queries the server for information.
 /// Synchronously queries the server for its information, specifically, the name, vendor, server version, and the version of the notifications specification that it is compliant with.
 pub fn get_server_info() -> Option<ServerInfo> {
-    todo!();
+    let mut ret_name = std::ptr::null_mut() as *mut std::os::raw::c_char;
+    let mut ret_vendor = std::ptr::null_mut() as *mut std::os::raw::c_char;
+    let mut ret_version = std::ptr::null_mut() as *mut std::os::raw::c_char;
+    let mut ret_spec_version = std::ptr::null_mut() as *mut std::os::raw::c_char;
+
+    if unsafe {
+        notify_get_server_info(
+            &mut ret_name,
+            &mut ret_vendor,
+            &mut ret_version,
+            &mut ret_spec_version,
+        )
+    } == 0
+    {
+        return None;
+    }
+
+    Some(ServerInfo {
+        name: unsafe { c_str_to_rs_str_and_free(ret_name) },
+        vendor: unsafe { c_str_to_rs_str_and_free(ret_vendor) },
+        version: unsafe { c_str_to_rs_str_and_free(ret_version) },
+        spec_version: unsafe { c_str_to_rs_str_and_free(ret_spec_version) },
+    })
+}
+
+unsafe fn c_str_to_rs_str_and_free(c_str: *mut std::os::raw::c_char) -> Option<String> {
+    if c_str.is_null() {
+        return None;
+    }
+
+    let normal_string: String = unsafe { std::ffi::CStr::from_ptr(c_str) }
+        .to_string_lossy()
+        .to_string();
+
+    unsafe { g_free(c_str as *mut std::ffi::c_void) };
+
+    Some(normal_string)
 }
 
 /* Setters
