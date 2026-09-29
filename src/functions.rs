@@ -1,3 +1,5 @@
+use std::str::Bytes;
+
 include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 
 /* Initting
@@ -75,6 +77,21 @@ pub struct ServerInfo {
 /// Queries the server for information.
 /// Synchronously queries the server for its information, specifically, the name, vendor, server version, and the version of the notifications specification that it is compliant with.
 pub fn get_server_info() -> Option<ServerInfo> {
+    todo!();
+}
+
+/* Setters
+ *
+*/
+
+/// Sets the application name
+pub fn set_app_name(app_name: &str) {
+    todo!();
+}
+
+/// Sets the application icon.
+/// Available since: 0.8.4
+pub fn set_app_icon(app_icon: &str) {
     todo!();
 }
 
