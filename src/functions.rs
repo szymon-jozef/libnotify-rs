@@ -160,8 +160,11 @@ unsafe fn c_str_to_rs_str_and_free(c_str: *mut std::os::raw::c_char) -> Option<S
 */
 
 /// Sets the application name
-pub fn set_app_name(app_name: &str) {
-    todo!();
+pub fn set_app_name(app_name: &str) -> Result<(), Box<dyn std::error::Error>> {
+    let app_name_c = std::ffi::CString::new(app_name)?;
+    unsafe { notify_set_app_name(app_name_c.as_ptr()) };
+
+    Ok(())
 }
 
 /// Sets the application icon.
