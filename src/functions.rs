@@ -194,4 +194,17 @@ mod tests {
         uninit();
         assert!(!is_initted());
     }
+
+    #[test]
+    fn test_app_name_set_and_get() {
+        let first_name: &str = "Morbius";
+        init(first_name);
+        assert_eq!(get_app_name().unwrap(), first_name);
+
+        let new_name: &str = "Milo";
+        set_app_name(new_name);
+        assert_eq!(get_app_name().unwrap(), new_name);
+
+        uninit();
+    }
 }
