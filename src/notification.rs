@@ -13,6 +13,20 @@ pub enum ClosedReason {
     Undefined,
 }
 
+/// Enum representing `[GVariant](https://docs.gtk.org/glib/struct.Variant.html)`
+/// Used in set hint.
+pub enum HintValue {
+    String(String),
+    Int32(i32),
+    Boolean(bool),
+}
+
+pub enum Timeout {
+    Default,
+    Never,
+    Custom(i32),
+}
+
 pub struct Notification {
     inner: *mut NotifyNotification,
 }
@@ -79,6 +93,87 @@ impl<'a> Notification {
         }
 
         Ok(())
+    }
+
+    /// Clears all actions from the notification
+    pub fn clear_actions(&mut self) {
+        todo!();
+    }
+
+    /// Clears all hints from the notification
+    pub fn clear_hints(&mut self) {
+        todo!();
+    }
+
+    /// Synchronously tells the notification server to hide the notification on the screen
+    pub fn close(&self) -> Result<(), Box<dyn std::error::Error>> {
+        todo!();
+    }
+
+    /// Returns the closed reason code for the notification.
+    ///
+    /// This is valid only after the Notification::closed signal is emitted.
+    pub fn get_closed_reason(&self) -> ClosedReason {
+        todo!();
+    }
+
+    /// Sets the application icon for the notification.
+    ///
+    /// If this function is not called, the application icon will be set from the value set via
+    /// set_app_icon().
+    ///
+    /// Available since: 0.8.4
+    pub fn set_app_icon(&mut self, app_icon: &str) {
+        todo!();
+    }
+
+    /// Sets the application name for the notification.
+    ///
+    /// If this function is not called, the application name will be set from the value used in init() or overridden with set_app_name().
+    pub fn set_app_name(&mut self, app_name: &str) {
+        todo!();
+    }
+
+    /// Sets the category of this notification.
+    ///
+    /// This can be used by the notification server to filter or display the data in a certain way
+    pub fn set_category(&mut self, category: &str) {
+        todo!();
+    }
+
+    /// Sets a hint for key with value value
+    ///
+    /// Available since: 0.6
+    pub fn set_hint(&mut self, key: &str, value: HintValue) {
+        todo!();
+    }
+
+    /// Sets the timeout of the notification.
+    ///
+    /// Note that the timeout may be ignored by the server.
+    pub fn set_timeout(&mut self, timeout: Timeout) {
+        todo!();
+    }
+
+    /// Sets the urgency level of this notification
+    pub fn set_urgency(&mut self, urgency: Urgency) {
+        todo!();
+    }
+
+    /// Tells the notification server to display the notification on the screen
+    pub fn show(&self) -> Result<(), Box<dyn std::error::Error>> {
+        todo!();
+    }
+
+    /// Updates the notification text and icon.
+    ///
+    /// This won’t send the update out and display it on the screen. For that, you will need to call `show()`.
+    pub fn update<'b, F, I>(&mut self, summary: &str, body: F, icon: I)
+    where
+        F: Into<Option<&'b str>>,
+        I: Into<Option<&'b str>>,
+    {
+        todo!();
     }
 }
 

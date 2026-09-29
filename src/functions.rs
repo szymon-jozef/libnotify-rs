@@ -1,5 +1,3 @@
-use std::str::Bytes;
-
 include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 
 /* Initting
