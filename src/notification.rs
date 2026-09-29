@@ -97,7 +97,7 @@ impl<'a> Notification {
 
     /// Clears all actions from the notification
     pub fn clear_actions(&mut self) {
-        todo!();
+        unsafe { notify_notification_clear_actions(self.inner) }
     }
 
     /// Clears all hints from the notification
