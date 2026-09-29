@@ -51,8 +51,18 @@ pub fn is_initted() -> bool {
 
 // Gets the application icon registered.
 // Available since: 0.8.4
-pub fn get_app_icon() -> String {
-    todo!();
+pub fn get_app_icon() -> Option<String> {
+    let app_icon_c: *const std::os::raw::c_char = unsafe { notify_get_app_icon() };
+
+    if app_icon_c.is_null() {
+        return None;
+    } else {
+        Some(
+            unsafe { std::ffi::CStr::from_ptr(app_icon_c) }
+                .to_string_lossy()
+                .to_string(),
+        )
+    }
 }
 
 /// Queries the server capabilities.
