@@ -202,9 +202,21 @@ mod tests {
         assert_eq!(get_app_name().unwrap(), first_name);
 
         let new_name: &str = "Milo";
-        set_app_name(new_name);
+        let _ = set_app_name(new_name);
         assert_eq!(get_app_name().unwrap(), new_name);
 
         uninit();
+    }
+
+    #[test]
+    fn test_app_name_bad_name() {
+        init("Morbius");
+
+        let bad_name: &str = "mor\0ius";
+        assert!(
+            set_app_name(bad_name)
+                .unwrap_err()
+                .is::<std::ffi::c_str::NulError>()
+        );
     }
 }
