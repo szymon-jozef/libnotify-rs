@@ -35,6 +35,7 @@ where
 }
 
 /// Uninitializes libnotify.
+///
 /// This should be called when the program no longer needs libnotify for the rest of its lifecycle, typically just before exitting.
 pub fn uninit() {
     unsafe {
@@ -47,9 +48,24 @@ pub fn is_initted() -> bool {
     unsafe { notify_is_initted() != 0 }
 }
 
-/* Getting
+/* Getters
  *
 */
+
+/// Gets the application name registered.
+pub fn get_app_name() -> Option<String> {
+    let app_name_c: *const std::os::raw::c_char = unsafe { notify_get_app_name() };
+
+    if app_name_c.is_null() {
+        return None;
+    } else {
+        Some(
+            unsafe { std::ffi::CStr::from_ptr(app_name_c) }
+                .to_string_lossy()
+                .to_string(),
+        )
+    }
+}
 
 // Gets the application icon registered.
 // Available since: 0.8.4
