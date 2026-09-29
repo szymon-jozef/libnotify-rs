@@ -102,7 +102,7 @@ impl<'a> Notification {
 
     /// Clears all hints from the notification
     pub fn clear_hints(&mut self) {
-        todo!();
+        unsafe { notify_notification_clear_hints(self.inner) }
     }
 
     /// Synchronously tells the notification server to hide the notification on the screen
