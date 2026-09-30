@@ -9,3 +9,6 @@ bindgen = "0.73.2"
 
 [dependencies]
 serial_test = "4.0.1"
+
+[dev-dependencies]
+glib = "0.22.10"
