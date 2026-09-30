@@ -163,7 +163,7 @@ pub fn get_server_info() -> Option<ServerInfo> {
 */
 
 /// Sets the application name
-pub fn set_app_name(app_name: &str) -> Result<(), Box<dyn std::error::Error>> {
+pub fn set_app_name(app_name: &str) -> Result<(), std::ffi::NulError> {
     let app_name_c = std::ffi::CString::new(app_name)?;
     unsafe { notify_set_app_name(app_name_c.as_ptr()) };
 
@@ -174,7 +174,7 @@ pub fn set_app_name(app_name: &str) -> Result<(), Box<dyn std::error::Error>> {
 /// Available since: 0.8.4
 ///
 /// app_icon is icon name or path to an image
-pub fn set_app_icon(app_icon: &str) -> Result<(), Box<dyn std::error::Error>> {
+pub fn set_app_icon(app_icon: &str) -> Result<(), std::ffi::NulError> {
     let app_icon_c = std::ffi::CString::new(app_icon)?;
     unsafe { notify_set_app_icon(app_icon_c.as_ptr()) };
 
@@ -222,10 +222,7 @@ mod tests {
         let _ = init("Morbius");
 
         let bad_name: &str = "mor\0ius";
-        assert!(
-            set_app_name(bad_name)
-                .unwrap_err()
-                .is::<std::ffi::c_str::NulError>()
-        );
+        assert!(set_app_name(bad_name).is_err());
+        uninit();
     }
 }
