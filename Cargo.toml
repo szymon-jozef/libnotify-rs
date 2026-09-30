@@ -2,13 +2,19 @@
 name = "libnotify-rs"
 version = "0.1.0"
 edition = "2024"
+authors = [ "szymon_jozef"]
+description = "Rust bindings for libnotify"
+readme = "./README.md"
+homepage = "https://github.com/szymon-jozef/libnotify-rs"
+repository = "https://github.com/szymon-jozef/libnotify-rs"
+license = "MIT"
+keywords = [ "bindings", "libnotify" ]
+build = "./build.rs"
 
 [build-dependencies]
 pkg-config = "0.3.34"
 bindgen = "0.73.2"
 
-[dependencies]
-serial_test = "4.0.1"
-
 [dev-dependencies]
 glib = "0.22.10"
+serial_test = "4.0.1"
