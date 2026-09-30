@@ -54,15 +54,9 @@ impl<'a> Notification {
     {
         let summary = std::ffi::CString::new(summary)?;
 
-        let body = body
-            .into()
-            .map(std::ffi::CString::new)
-            .transpose()?;
+        let body = body.into().map(std::ffi::CString::new).transpose()?;
 
-        let icon = icon
-            .into()
-            .map(std::ffi::CString::new)
-            .transpose()?;
+        let icon = icon.into().map(std::ffi::CString::new).transpose()?;
 
         let inner = unsafe {
             notify_notification_new(
@@ -293,15 +287,9 @@ impl<'a> Notification {
     {
         let summary = std::ffi::CString::new(summary)?;
 
-        let body = body
-            .into()
-            .map(std::ffi::CString::new)
-            .transpose()?;
+        let body = body.into().map(std::ffi::CString::new).transpose()?;
 
-        let icon = icon
-            .into()
-            .map(std::ffi::CString::new)
-            .transpose()?;
+        let icon = icon.into().map(std::ffi::CString::new).transpose()?;
 
         unsafe {
             notify_notification_update(

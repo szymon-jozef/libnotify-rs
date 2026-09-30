@@ -14,10 +14,7 @@ pub fn init<'a, T>(app_name: T) -> Result<(), Box<dyn std::error::Error>>
 where
     T: Into<Option<&'a str>>,
 {
-    let app_name = app_name
-        .into()
-        .map(std::ffi::CString::new)
-        .transpose()?;
+    let app_name = app_name.into().map(std::ffi::CString::new).transpose()?;
 
     if unsafe {
         notify_init(
