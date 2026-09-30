@@ -3,5 +3,6 @@
 #![allow(non_snake_case)]
 
 pub mod functions;
+mod libnotify;
 pub mod notification;
 mod utils;

@@ -1,6 +1,6 @@
 use crate::utils::c_str_to_rs_str_and_free;
 
-include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
+use crate::libnotify::*;
 
 /* Initting
  *
