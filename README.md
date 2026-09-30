@@ -1,6 +1,6 @@
 ![Tests](https://github.com/szymon-jozef/libnotify-rs/actions/workflows/tests.yml/badge.svg)
 ![GitHub License](https://img.shields.io/github/license/szymon-jozef/libnotify-rs)
-![Gitea Release](https://img.shields.io/gitea/v/release/szymon-jozef/libnotify-rs)
+![GitHub Release](https://img.shields.io/github/v/release/szymon-jozef/libnotify-rs)
 
 <!--toc:start-->
 - [Rust bindings for libnotify](#rust-bindings-for-libnotify)
