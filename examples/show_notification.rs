@@ -4,7 +4,7 @@ use libnotify_rs::{
 };
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    init("I love coffee");
+    init("I love coffee")?;
     let mut notify = Notification::new(
         "Remember to drink coffe!",
         "Coffee is very important for your mental health!",

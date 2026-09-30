@@ -10,28 +10,27 @@ use crate::libnotify::*;
 /// Initialized libnotify. This must be called before any other functions.
 ///
 /// Starting from 0.8, if the provided app_name is NULL, libnotify will try to figure it out from the running application. Before it was not allowed, and was causing libnotify not to be initialized.
-///
-/// # Returns
-/// TRUE if successful, or FALSE on error
-pub fn init<'a, T>(app_name: T) -> bool
+pub fn init<'a, T>(app_name: T) -> Result<(), Box<dyn std::error::Error>>
 where
     T: Into<Option<&'a str>>,
 {
-    match app_name
+    let app_name = app_name
         .into()
         .map(|app_name| std::ffi::CString::new(app_name))
-        .transpose()
-    {
-        Ok(app_name) => unsafe {
-            notify_init(
-                app_name
-                    .as_ref()
-                    .map_or(std::ptr::null(), |app_name| app_name.as_ptr()),
-            ) != 0
-        },
+        .transpose()?;
 
-        Err(_) => return false,
+    if unsafe {
+        notify_init(
+            app_name
+                .as_ref()
+                .map_or(std::ptr::null(), |app_name| app_name.as_ptr()),
+        )
+    } == 0
+    {
+        return Err("Libnotify init failed".into());
     }
+
+    Ok(())
 }
 
 /// Uninitializes libnotify.
@@ -190,16 +189,25 @@ mod tests {
     #[test]
     fn test_initializing() {
         assert!(!is_initted());
-        assert!(init("Morbius"));
+        assert!(init("Morbius").is_ok());
         assert!(is_initted());
         uninit();
         assert!(!is_initted());
     }
 
     #[test]
+    fn test_bad_init() {
+        assert!(
+            init("Mor\0ius")
+                .unwrap_err()
+                .is::<std::ffi::c_str::NulError>()
+        );
+    }
+
+    #[test]
     fn test_app_name_set_and_get() {
         let first_name: &str = "Morbius";
-        init(first_name);
+        let _ = init(first_name);
         assert_eq!(get_app_name().unwrap(), first_name);
 
         let new_name: &str = "Milo";
@@ -211,7 +219,7 @@ mod tests {
 
     #[test]
     fn test_app_name_bad_name() {
-        init("Morbius");
+        let _ = init("Morbius");
 
         let bad_name: &str = "mor\0ius";
         assert!(

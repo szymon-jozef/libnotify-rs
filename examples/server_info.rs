@@ -1,7 +1,7 @@
 use libnotify_rs::functions::{self, uninit};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    functions::init("Morbius");
+    functions::init("Morbius")?;
 
     if let Some(caps) = functions::get_server_caps() {
         println!("=== Server caps ===");
