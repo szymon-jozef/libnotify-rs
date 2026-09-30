@@ -40,7 +40,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
 
       - name: Install dependencies
-        run: sudo apt install libnotify-dev clang pkg-config -y
+        run: sudo apt-get update && sudo apt-get install -y libnotify-dev clang pkg-config
 
       - name: Test dev build
         run: cargo test
