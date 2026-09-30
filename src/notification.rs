@@ -173,8 +173,13 @@ impl<'a> Notification {
     /// Sets the application name for the notification.
     ///
     /// If this function is not called, the application name will be set from the value used in init() or overridden with set_app_name().
-    pub fn set_app_name(&mut self, app_name: &str) {
-        todo!();
+    ///
+    /// Available since: 0.7.3
+    pub fn set_app_name(&mut self, app_name: &str) -> Result<(), std::ffi::NulError> {
+        let app_name_c = std::ffi::CString::new(app_name)?;
+        unsafe { notify_notification_set_app_name(self.inner, app_name_c.as_ptr()) };
+
+        Ok(())
     }
 
     /// Sets the category of this notification.
