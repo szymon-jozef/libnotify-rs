@@ -21,6 +21,9 @@ Which resembles libnotify structure. Every function is named similarly to its li
 
 There are some helper structs and enums to make it more approachable to rust folks.
 
+## Documentation
+Available at [github pages](https://szymon-jozef.github.io/libnotify-rs/libnotify_rs/index.html);
+
 ## Add to project
 Type in:
 ```bash
