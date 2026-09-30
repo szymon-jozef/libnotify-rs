@@ -1,11 +1,13 @@
 use crate::libnotify::*;
 
+#[derive(Debug, Clone, Copy)]
 pub enum Urgency {
     Low,
     Normal,
     Critical,
 }
 
+#[derive(Debug, Clone, Copy)]
 pub enum ClosedReason {
     /// Notification not closed
     Unset,
@@ -25,6 +27,7 @@ pub enum ClosedReason {
 
 /// Enum representing `[GVariant](https://docs.gtk.org/glib/struct.Variant.html)`
 /// Used in set hint.
+#[derive(Debug, Clone)]
 pub enum HintValue {
     String(String),
     Int32(i32),
@@ -32,6 +35,7 @@ pub enum HintValue {
 }
 
 /// The timeout in milliseconds
+#[derive(Debug, Clone, Copy)]
 pub enum Timeout {
     Default,
     Never,
