@@ -7,6 +7,7 @@
   - [Structure](#structure)
   - [Documentation](#documentation)
   - [Add to project](#add-to-project)
+    - [Nix flake](#nix-flake)
   - [Dependencies](#dependencies)
   - [Examples](#examples)
   - [Why?](#why)
@@ -34,6 +35,23 @@ Available at [github pages](https://szymon-jozef.github.io/libnotify-rs/libnotif
 Type in:
 ```bash
 cargo add --git "https://github.com/szymon-jozef/libnotify-rs"
+```
+
+### Nix flake
+For nix users, there is also a flake inside. If you want to use it add this to your flake:
+
+```nix
+inputs = {
+    libnotify-rs.url = "github:szymon-jozef/libnotify-rs";
+};
+```
+
+And then to your derivation/devshell/wherever:
+
+```Nix
+packages = [
+    inputs.libnotify-rs.packages.${stdenv.system}.default
+];
 ```
 
 ## Dependencies
