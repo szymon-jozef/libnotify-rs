@@ -1,4 +1,4 @@
-![Tests](https://github.com/szymon-jozef/libnotify-rs/actions/master/.github/workflows/tests.yml/badge.svg)
+![Tests](https://github.com/szymon-jozef/libnotify-rs/blob/master/.github/workflows/tests.yml/badge.svg)
 ![GitHub License](https://img.shields.io/github/license/szymon-jozef/libnotify-rs)
 ![Gitea Release](https://img.shields.io/gitea/v/release/szymon-jozef/libnotify-rs)
 
