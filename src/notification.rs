@@ -31,6 +31,7 @@ pub enum HintValue {
     Boolean(bool),
 }
 
+/// The timeout in milliseconds
 pub enum Timeout {
     Default,
     Never,
@@ -226,7 +227,13 @@ impl<'a> Notification {
     ///
     /// Note that the timeout may be ignored by the server.
     pub fn set_timeout(&mut self, timeout: Timeout) {
-        todo!();
+        let timeout_c = match timeout {
+            Timeout::Default => NOTIFY_EXPIRES_DEFAULT as i32,
+            Timeout::Never => NOTIFY_EXPIRES_NEVER as i32,
+            Timeout::Custom(i) => i,
+        };
+
+        unsafe { notify_notification_set_timeout(self.inner, timeout_c) }
     }
 
     /// Sets the urgency level of this notification
