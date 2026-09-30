@@ -7,10 +7,20 @@ pub enum Urgency {
 }
 
 pub enum ClosedReason {
+    /// Notification not closed
     Unset,
+    /// Timeout has expired
     Expired,
+    /// It has been dismissed by the user
+    Dismissed,
+    /// It has been closed by a call to `notify_notification_close()`
     ApiRequest,
+    /// Closed by undefined/reserved reasons
     Undefined,
+
+    /// This variant is returned only if libnotify returns some weird enum value, which should never
+    /// happen
+    Invalid,
 }
 
 /// Enum representing `[GVariant](https://docs.gtk.org/glib/struct.Variant.html)`
@@ -137,7 +147,14 @@ impl<'a> Notification {
     ///
     /// This is valid only after the Notification::closed signal is emitted.
     pub fn get_closed_reason(&self) -> ClosedReason {
-        todo!();
+        match unsafe { notify_notification_get_closed_reason(self.inner) } {
+            NotifyClosedReason_NOTIFY_CLOSED_REASON_UNSET => ClosedReason::Unset,
+            NotifyClosedReason_NOTIFY_CLOSED_REASON_EXPIRED => ClosedReason::Expired,
+            NotifyClosedReason_NOTIFY_CLOSED_REASON_DISMISSED => ClosedReason::Dismissed,
+            NotifyClosedReason_NOTIFY_CLOSED_REASON_API_REQUEST => ClosedReason::ApiRequest,
+            NotifyClosedReason_NOTIFY_CLOSED_REASON_UNDEFINED => ClosedReason::Undefined,
+            _ => ClosedReason::Invalid,
+        }
     }
 
     /// Sets the application icon for the notification.
