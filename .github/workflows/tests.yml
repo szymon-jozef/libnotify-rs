@@ -59,7 +59,7 @@ jobs:
         run: sudo apt install libnotify-dev clang pkg-config -y
 
       - name: Clippy check
-        run: cargo clippy -- -D
+        run: cargo clippy -- -D warnings
 
       - name: Format check
         run: cargo fmt -- --check
