@@ -56,12 +56,12 @@ impl<'a> Notification {
 
         let body = body
             .into()
-            .map(|body| std::ffi::CString::new(body))
+            .map(std::ffi::CString::new)
             .transpose()?;
 
         let icon = icon
             .into()
-            .map(|icon| std::ffi::CString::new(icon))
+            .map(std::ffi::CString::new)
             .transpose()?;
 
         let inner = unsafe {
@@ -232,7 +232,7 @@ impl<'a> Notification {
     /// Note that the timeout may be ignored by the server.
     pub fn set_timeout(&mut self, timeout: Timeout) {
         let timeout_c = match timeout {
-            Timeout::Default => NOTIFY_EXPIRES_DEFAULT as i32,
+            Timeout::Default => NOTIFY_EXPIRES_DEFAULT,
             Timeout::Never => NOTIFY_EXPIRES_NEVER as i32,
             Timeout::Custom(i) => i,
         };
@@ -295,12 +295,12 @@ impl<'a> Notification {
 
         let body = body
             .into()
-            .map(|body| std::ffi::CString::new(body))
+            .map(std::ffi::CString::new)
             .transpose()?;
 
         let icon = icon
             .into()
-            .map(|icon| std::ffi::CString::new(icon))
+            .map(std::ffi::CString::new)
             .transpose()?;
 
         unsafe {

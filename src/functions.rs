@@ -16,7 +16,7 @@ where
 {
     let app_name = app_name
         .into()
-        .map(|app_name| std::ffi::CString::new(app_name))
+        .map(std::ffi::CString::new)
         .transpose()?;
 
     if unsafe {
@@ -56,7 +56,7 @@ pub fn get_app_name() -> Option<String> {
     let app_name_c: *const std::os::raw::c_char = unsafe { notify_get_app_name() };
 
     if app_name_c.is_null() {
-        return None;
+        None
     } else {
         Some(
             unsafe { std::ffi::CStr::from_ptr(app_name_c) }
@@ -72,7 +72,7 @@ pub fn get_app_icon() -> Option<String> {
     let app_icon_c: *const std::os::raw::c_char = unsafe { notify_get_app_icon() };
 
     if app_icon_c.is_null() {
-        return None;
+        None
     } else {
         Some(
             unsafe { std::ffi::CStr::from_ptr(app_icon_c) }
