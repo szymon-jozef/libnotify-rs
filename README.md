@@ -38,7 +38,7 @@ cargo add --git "https://github.com/szymon-jozef/libnotify-rs"
 
 ## Dependencies
 To use this crate you need to have installed:
-- [libnotify](https://gitlab.gnome.org/GNOME/libnotify), duh
+- [libnotify](https://gitlab.gnome.org/GNOME/libnotify), duh (version 0.8.8 >= is supported)
 - [clang](https://clang.llvm.org/) for bindgen
 - [pkg-config](https://www.freedesktop.org/wiki/Software/pkg-config/?__goaway_challenge=meta-refresh&__goaway_id=e567f4f3ff21df0fb2b589fc86ed197e&__goaway_referer=https%3A%2F%2Fsearch.brave.com%2F), to find the above
 

@@ -33,13 +33,22 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Install dependencies
         run: sudo apt update && sudo apt install libnotify-dev clang pkg-config -y
+
+      - uses: cachix/install-nix-action@v31
+      - uses: cachix/cachix-action@v16
+        with:
+          name: devenv
+      - name: Install devenv.sh
+        run: nix profile add nixpkgs#devenv
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Generate docs
         run: |
-          cargo doc --no-deps
+          devenv shell cargo doc --no-deps
           echo '<meta http-equiv="refresh" content="0; url=libnotify_rs/index.html">' > target/doc/index.html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
