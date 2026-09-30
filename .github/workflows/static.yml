@@ -34,7 +34,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Install dependencies
-        run: sudo apt install libnotify-dev clang pkg-config -y
+        run: sudo apt update && sudo apt install libnotify-dev clang pkg-config -y
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Generate docs
