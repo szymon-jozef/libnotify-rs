@@ -238,7 +238,13 @@ impl<'a> Notification {
 
     /// Sets the urgency level of this notification
     pub fn set_urgency(&mut self, urgency: Urgency) {
-        todo!();
+        let urgency: u32 = match urgency {
+            Urgency::Low => NotifyUrgency_NOTIFY_URGENCY_LOW,
+            Urgency::Normal => NotifyUrgency_NOTIFY_URGENCY_NORMAL,
+            Urgency::Critical => NotifyUrgency_NOTIFY_URGENCY_CRITICAL,
+        };
+
+        unsafe { notify_notification_set_urgency(self.inner, urgency) }
     }
 
     /// Tells the notification server to display the notification on the screen
