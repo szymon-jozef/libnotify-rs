@@ -277,12 +277,38 @@ impl<'a> Notification {
     /// Updates the notification text and icon.
     ///
     /// This won’t send the update out and display it on the screen. For that, you will need to call `show()`.
-    pub fn update<'b, F, I>(&mut self, summary: &str, body: F, icon: I)
+    pub fn update<'b, F, I>(
+        &mut self,
+        summary: &str,
+        body: F,
+        icon: I,
+    ) -> Result<(), std::ffi::NulError>
     where
         F: Into<Option<&'b str>>,
         I: Into<Option<&'b str>>,
     {
-        todo!();
+        let summary = std::ffi::CString::new(summary)?;
+
+        let body = body
+            .into()
+            .map(|body| std::ffi::CString::new(body))
+            .transpose()?;
+
+        let icon = icon
+            .into()
+            .map(|icon| std::ffi::CString::new(icon))
+            .transpose()?;
+
+        unsafe {
+            notify_notification_update(
+                self.inner,
+                summary.as_ptr(),
+                body.as_ref().map_or(std::ptr::null(), |body| body.as_ptr()),
+                icon.as_ref().map_or(std::ptr::null(), |icon| icon.as_ptr()),
+            );
+        }
+
+        Ok(())
     }
 }
 
