@@ -195,8 +195,31 @@ impl<'a> Notification {
     /// Sets a hint for key with value value
     ///
     /// Available since: 0.6
-    pub fn set_hint(&mut self, key: &str, value: HintValue) {
-        todo!();
+    pub fn set_hint(
+        &mut self,
+        key: &str,
+        value: HintValue,
+    ) -> Result<(), Box<dyn std::error::Error>> {
+        let key_c = std::ffi::CString::new(key)?;
+
+        let value_c = match value {
+            HintValue::String(s) => {
+                let s = std::ffi::CString::new(s)?;
+                unsafe { g_variant_new_string(s.as_ptr()) }
+            }
+
+            HintValue::Int32(i) => unsafe { g_variant_new_int32(i) },
+
+            HintValue::Boolean(b) => unsafe { g_variant_new_boolean(b as i32) },
+        };
+
+        if value_c.is_null() {
+            return Err("Couldn't create hint value".into());
+        }
+
+        unsafe { notify_notification_set_hint(self.inner, key_c.as_ptr(), value_c) };
+
+        Ok(())
     }
 
     /// Sets the timeout of the notification.
