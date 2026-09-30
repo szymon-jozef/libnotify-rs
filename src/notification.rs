@@ -160,11 +160,14 @@ impl<'a> Notification {
     /// Sets the application icon for the notification.
     ///
     /// If this function is not called, the application icon will be set from the value set via
-    /// set_app_icon().
+    /// `set_app_icon()`.
     ///
     /// Available since: 0.8.4
-    pub fn set_app_icon(&mut self, app_icon: &str) {
-        todo!();
+    pub fn set_app_icon(&mut self, app_icon: &str) -> Result<(), Box<dyn std::error::Error>> {
+        let app_icon_c = std::ffi::CString::new(app_icon)?;
+        unsafe { notify_notification_set_app_icon(self.inner, app_icon_c.as_ptr()) };
+
+        Ok(())
     }
 
     /// Sets the application name for the notification.
