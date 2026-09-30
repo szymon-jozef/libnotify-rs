@@ -185,8 +185,11 @@ impl<'a> Notification {
     /// Sets the category of this notification.
     ///
     /// This can be used by the notification server to filter or display the data in a certain way
-    pub fn set_category(&mut self, category: &str) {
-        todo!();
+    pub fn set_category(&mut self, category: &str) -> Result<(), std::ffi::NulError> {
+        let category_c = std::ffi::CString::new(category)?;
+        unsafe { notify_notification_set_category(self.inner, category_c.as_ptr()) };
+
+        Ok(())
     }
 
     /// Sets a hint for key with value value
