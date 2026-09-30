@@ -316,6 +316,16 @@ impl<'a> Notification {
     }
 }
 
+impl Drop for Notification {
+    fn drop(&mut self) {
+        if self.inner.is_null() {
+            return; // shouldn't happen, but check just in case
+        }
+
+        unsafe { g_object_unref(self.inner as *mut std::os::raw::c_void) };
+    }
+}
+
 unsafe extern "C" fn action_trampoline<F>(
     _notification: *mut NotifyNotification,
     action: *mut ::std::os::raw::c_char,
