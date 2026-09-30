@@ -37,6 +37,9 @@ jobs:
       - uses: actions/checkout@v6
       - uses: Swatinem/rust-cache@v2
 
+      - name: Install dependencies
+        run: sudo apt install libnotify-dev clang pkg-config -y
+
       - name: Test dev build
         run: cargo test
 
@@ -49,6 +52,9 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: Swatinem/rust-cache@v2
+
+      - name: Install dependencies
+        run: sudo apt install libnotify-dev clang pkg-config -y
 
       - name: Clippy check
         run: cargo clippy -- -D
