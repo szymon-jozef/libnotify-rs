@@ -11,8 +11,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         None,
         &ctx,
     )?
-    .set_urgency(libnotify_rs::notification::Urgency::Critical)
-    .set_timeout(libnotify_rs::notification::Timeout::Never)
+    .set_urgency(libnotify_rs::api::notification::Urgency::Critical)
+    .set_timeout(libnotify_rs::api::notification::Timeout::Never)
     .set_category("Coffee")?;
 
     notification_builder.show()?;

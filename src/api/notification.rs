@@ -1,4 +1,4 @@
-use crate::libnotify::*;
+use super::libnotify::*;
 
 #[derive(Debug, Clone, Copy)]
 pub enum Urgency {

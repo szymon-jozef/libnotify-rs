@@ -1,6 +1,6 @@
 use crate::{
-    context::LibnotifyContext,
-    notification::{HintValue, Notification, Timeout, Urgency},
+    api::notification::{HintValue, Notification, Timeout, Urgency},
+    wrappers::context::LibnotifyContext,
 };
 
 pub struct NotificationBuilder<'a> {

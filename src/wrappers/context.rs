@@ -1,4 +1,4 @@
-use crate::functions::{init, is_initted, set_app_icon, set_app_name, uninit};
+use crate::api::functions::{init, is_initted, set_app_icon, set_app_name, uninit};
 
 pub struct LibnotifyContext {}
 
