@@ -1,4 +1,4 @@
-use libnotify_rs::functions::{self, uninit};
+use libnotify_rs::api::functions::{self, uninit};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     functions::init("Morbius")?;

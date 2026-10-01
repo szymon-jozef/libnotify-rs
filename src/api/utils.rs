@@ -7,7 +7,7 @@ pub unsafe fn c_str_to_rs_str_and_free(c_str: *mut std::os::raw::c_char) -> Opti
         .to_string_lossy()
         .to_string();
 
-    unsafe { crate::libnotify::g_free(c_str as *mut std::ffi::c_void) };
+    unsafe { super::libnotify::g_free(c_str as *mut std::ffi::c_void) };
 
     Some(normal_string)
 }

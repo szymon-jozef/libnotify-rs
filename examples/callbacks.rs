@@ -1,7 +1,7 @@
 use glib::MainLoop;
 use libnotify_rs::{
-    functions::{init, uninit},
-    notification::Notification,
+    api::functions::{init, uninit},
+    api::notification::Notification,
 };
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {

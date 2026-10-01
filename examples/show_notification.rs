@@ -1,6 +1,6 @@
-use libnotify_rs::{
+use libnotify_rs::api::{
     functions::{init, uninit},
-    notification::Notification,
+    notification::{self, Notification},
 };
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -11,8 +11,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         None,
     )?;
 
-    notify.set_timeout(libnotify_rs::notification::Timeout::Custom(1000 * 10)); // 10 secs
-    notify.set_urgency(libnotify_rs::notification::Urgency::Critical); // coffee is very important
+    notify.set_timeout(notification::Timeout::Custom(1000 * 10)); // 10 secs
+    notify.set_urgency(notification::Urgency::Critical); // coffee is very important
     notify.set_category("Coffee")?;
 
     notify.show()?;

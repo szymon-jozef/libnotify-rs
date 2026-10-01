@@ -1,6 +1,6 @@
-use crate::utils::c_str_to_rs_str_and_free;
+use super::utils::c_str_to_rs_str_and_free;
 
-use crate::libnotify::*;
+use super::libnotify::*;
 
 /* Initting
  *

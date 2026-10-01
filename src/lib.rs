@@ -3,9 +3,7 @@
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
 
-pub mod builder;
-pub mod context;
-pub mod functions;
-mod libnotify;
-pub mod notification;
-mod utils;
+pub mod api;
+pub mod wrappers;
+
+pub use wrappers::{builder, context};
