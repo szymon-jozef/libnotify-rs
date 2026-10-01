@@ -162,7 +162,7 @@ impl<'a> Notification {
     /// `set_app_icon()`.
     ///
     /// Available since: 0.8.4
-    pub fn set_app_icon(&mut self, app_icon: &str) -> Result<(), Box<dyn std::error::Error>> {
+    pub fn set_app_icon(&mut self, app_icon: &str) -> Result<(), std::ffi::NulError> {
         let app_icon_c = std::ffi::CString::new(app_icon)?;
         unsafe { notify_notification_set_app_icon(self.inner, app_icon_c.as_ptr()) };
 
