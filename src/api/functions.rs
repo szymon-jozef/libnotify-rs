@@ -116,6 +116,7 @@ pub fn get_server_caps() -> Option<Vec<String>> {
     if vec.is_empty() { None } else { Some(vec) }
 }
 
+/// Contains server information. Refer to [libnotify get_server_info docs](https://gnome.pages.gitlab.gnome.org/libnotify/func.get_server_info.html) to better understand specific fields
 pub struct ServerInfo {
     /// A location to store the server name, or `None`
     pub name: Option<String>,

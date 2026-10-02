@@ -1,13 +1,18 @@
 use super::libnotify::*;
 
 #[derive(Debug, Clone, Copy)]
+/// Notification urgency level. Refer to [libnotify docs](https://gnome.pages.gitlab.gnome.org/libnotify/enum.Urgency.html) for more info
 pub enum Urgency {
+    /// Low urgency. Used for unimportant notifications
     Low,
+    /// Normal urgency. Used for most standard notifications
     Normal,
+    /// Critical urgency. Used for very important notifications
     Critical,
 }
 
 #[derive(Debug, Clone, Copy)]
+/// Reason why notification was closed. Refer to [libnotify docs](https://gnome.pages.gitlab.gnome.org/libnotify/enum.ClosedReason.html)
 pub enum ClosedReason {
     /// Notification not closed
     Unset,
@@ -29,24 +34,39 @@ pub enum ClosedReason {
 /// Used in set hint.
 #[derive(Debug, Clone)]
 pub enum HintValue {
+    #[allow(missing_docs)]
     String(String),
+    #[allow(missing_docs)]
     Int32(i32),
+    #[allow(missing_docs)]
     Boolean(bool),
 }
 
-/// The timeout in milliseconds
+/// Notification timeout, until close
 #[derive(Debug, Clone, Copy)]
 pub enum Timeout {
+    #[allow(missing_docs)]
     Default,
+    #[allow(missing_docs)]
     Never,
+    /// Custom timeout in milliseconds
     Custom(i32),
 }
 
+/// Represents one notification. Wraps most of [libnotify::notifaction](https://gnome.pages.gitlab.gnome.org/libnotify/class.Notification.html) functions.
 pub struct Notification {
     inner: *mut NotifyNotification,
 }
 
 impl<'a> Notification {
+    /// Create new notification.
+    ///
+    /// # Errors
+    /// This function will return an error if the supplied bytes contain an
+    /// internal 0 byte. The [`NulError`](https://doc.rust-lang.org/stable/alloc/ffi/c_str/struct.NulError.html) returned will contain the bytes as well as
+    /// the position of the nul byte.
+    ///
+    /// On libnotify fail it will return Err(&str.into). May change in the future.
     pub fn new<T, Y>(summary: &str, body: T, icon: Y) -> Result<Self, Box<dyn std::error::Error>>
     where
         T: Into<Option<&'a str>>,
@@ -73,6 +93,15 @@ impl<'a> Notification {
         Ok(Self { inner })
     }
 
+    /// Add callback to notification.
+    ///
+    /// # Args
+    /// `action` – action identifier. `default` will work for most use cases. Other text will be
+    /// displayed as button names.
+    ///
+    /// `label` – label for user
+    ///
+    /// `callback` - any closure that accepts &str as an argument, where &str is action name.
     pub fn add_action<F>(
         &mut self,
         action: &str,
