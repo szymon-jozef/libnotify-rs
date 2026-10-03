@@ -58,6 +58,8 @@ To use this crate you need to have installed:
 ## Examples
 Refer to [examples dir](./examples)
 
+Also have a look at [notify-send-rs](https://github.com/szymon-jozef/notify-send-rs). That's a small notify-send clone I made with this lib, as an example.
+
 Sneak peek for making a notification:
 
 ### Without my super cool wrapper (:()
