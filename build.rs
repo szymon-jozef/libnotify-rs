@@ -2,7 +2,9 @@ use std::env;
 use std::path::PathBuf;
 
 fn main() {
-    let library = pkg_config::Config::new().probe("libnotify").unwrap();
+    let library = pkg_config::Config::new()
+        .probe("libnotify")
+        .expect("Cannot locate libnotify. Is it installed?");
 
     let paths = library
         .include_paths
@@ -17,7 +19,8 @@ fn main() {
         .generate()
         .expect("Unable to generate bindings");
 
-    let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
+    let out_path =
+        PathBuf::from(env::var("OUT_DIR").expect("Out $OUT_DIR not set. Perhaps a bindgen error?"));
 
     bindings
         .write_to_file(out_path.join("bindings.rs"))
