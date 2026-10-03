@@ -19,14 +19,7 @@
 
 This crate exposes a user friendly (at least I hope), Rust api for [libnotify](https://gitlab.gnome.org/GNOME/libnotify). Made using [bindgen](https://github.com/rust-lang/rust-bindgen).
 
-## Structure
-Project is split into two modules:
-- functions
-- notifications
-
-Which resembles libnotify structure. Every function is named similarly to its libnotify counterpart and it does the same things.
-
-There are some helper structs and enums to make it more approachable to rust folks.
+It comes with basic libnotify calls bindings and higher level abstraction over it.
 
 ## Documentation
 Available at [github pages](https://szymon-jozef.github.io/libnotify-rs/libnotify_rs/index.html);
@@ -65,13 +58,15 @@ Refer to [examples dir](./examples)
 
 Sneak peek for making a notification:
 
+### Without my super cool wrapper (:()
+
 ```rust
-use libnotify_rs::{
+use libnotify_rs::api::{
     functions::{init, uninit},
-    notification::Notification,
+    notification::{self, Notification},
 };
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+fn main() -> Result<(), LibnotifyError> {
     init("I love coffee")?;
     let mut notify = Notification::new(
         "Remember to drink coffe!",
@@ -79,8 +74,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         None,
     )?;
 
-    notify.set_timeout(libnotify_rs::notification::Timeout::Custom(1000 * 10)); // 10 secs
-    notify.set_urgency(libnotify_rs::notification::Urgency::Critical); // coffee is very important
+    notify.set_timeout(notification::Timeout::Custom(1000 * 10)); // 10 secs
+    notify.set_urgency(notification::Urgency::Critical); // coffee is very important
     notify.set_category("Coffee")?;
 
     notify.show()?;
@@ -90,6 +85,36 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 ```
+
+### With my super cool wrapper (:))
+
+```rust
+use libnotify_rs::{builder::NotificationBuilder, context::LibnotifyContext};
+
+/// Builder is recommended way to interact with libnotify notifications
+
+fn main() -> Result<(), LibnotifyError> {
+    let ctx = LibnotifyContext::new("Coffee addicted reminder")?; // builder requires context
+
+    let notification_builder = NotificationBuilder::new(
+        "Remember about your coffee!",
+        "Only idiots forget about coffee!",
+        None,
+        &ctx,
+    )?
+    .set_urgency(libnotify_rs::api::notification::Urgency::Critical)
+    .set_timeout(libnotify_rs::api::notification::Timeout::Never)
+    .set_category("Coffee")?;
+
+    notification_builder.show()?;
+
+    // you don't need to uninitialize libnotify, cause context already does that!
+
+    Ok(())
+}
+
+```
+
 
 To test those examples use:
 ```bash
@@ -116,6 +141,3 @@ It didn't write any of the actual code, nor any documentation.
 
 ## Roadmap
 I will be happy to fix any bugs that you may find! Just create a new issue, or better yet a pull request.
-
-I'm thinking about a small wrapper around other code, which would initialize libnotify by itself, cleanup after itself, etc. Maybe someday…
-
