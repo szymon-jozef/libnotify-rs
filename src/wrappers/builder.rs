@@ -34,42 +34,62 @@ impl<'a> NotificationBuilder<'a> {
     }
 
     /// Sets app name for this specific notification.
-    pub fn set_app_name(mut self, app_name: &str) -> Result<Self, LibnotifyError> {
-        self.notification.set_app_name(app_name)?;
+    pub fn set_app_name<T: Into<Option<&'a str>>>(
+        mut self,
+        app_name: T,
+    ) -> Result<Self, LibnotifyError> {
+        if let Some(app_name) = app_name.into() {
+            self.notification.set_app_name(app_name)?;
+        }
+
         Ok(self)
     }
 
     /// Sets app icon fot this specific notification.
-    pub fn set_app_icon(mut self, app_icon: &str) -> Result<Self, LibnotifyError> {
-        self.notification.set_app_icon(app_icon)?;
+    pub fn set_app_icon<T: Into<Option<&'a str>>>(
+        mut self,
+        app_icon: T,
+    ) -> Result<Self, LibnotifyError> {
+        if let Some(app_icon) = app_icon.into() {
+            self.notification.set_app_icon(app_icon)?;
+        }
+
         Ok(self)
     }
 
     /// Sets category for this specific notification
-    pub fn set_category(mut self, category: &str) -> Result<Self, LibnotifyError> {
-        self.notification.set_category(category)?;
+    pub fn set_category<T: Into<Option<&'a str>>>(
+        mut self,
+        category: T,
+    ) -> Result<Self, LibnotifyError> {
+        if let Some(category) = category.into() {
+            self.notification.set_category(category)?;
+        }
+
         Ok(self)
     }
 
     /// Set hint for this specific notification
-    pub fn set_hint(
-        mut self,
-        key: &str,
-        value: HintValue,
-    ) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn set_hint(mut self, key: &str, value: HintValue) -> Result<Self, LibnotifyError> {
         self.notification.set_hint(key, value)?;
         Ok(self)
     }
 
     /// Set timeout until close
-    pub fn set_timeout(mut self, timeout: Timeout) -> Self {
-        self.notification.set_timeout(timeout);
+    pub fn set_timeout<T: Into<Option<Timeout>>>(mut self, timeout: T) -> Self {
+        if let Some(timeout) = timeout.into() {
+            self.notification.set_timeout(timeout);
+        }
+
         self
     }
 
     /// Set notification urgency level
-    pub fn set_urgency(mut self, urgency: Urgency) -> Self {
-        self.notification.set_urgency(urgency);
+    pub fn set_urgency<T: Into<Option<Urgency>>>(mut self, urgency: T) -> Self {
+        if let Some(urgency) = urgency.into() {
+            self.notification.set_urgency(urgency);
+        }
+
         self
     }
 
