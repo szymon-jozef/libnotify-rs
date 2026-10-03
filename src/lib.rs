@@ -17,6 +17,9 @@
 #![allow(non_snake_case)]
 #![warn(missing_docs)]
 
+#[cfg(not(target_os = "linux"))]
+compile_error!("Libnotify-rs only supports linux");
+
 /// Basic libnotify rust wrapper
 pub mod api;
 /// Higher level abstraction over api
