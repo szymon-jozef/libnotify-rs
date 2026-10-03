@@ -10,7 +10,7 @@
 //!
 //! # Features
 //!
-//! - clap – enables [clap] support for `Urgency` and `Timeout` enums
+//! - clap – enables [clap] support for `Urgency`
 //!
 #![allow(non_upper_case_globals)]
 #![allow(non_camel_case_types)]

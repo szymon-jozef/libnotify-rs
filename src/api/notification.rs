@@ -47,7 +47,6 @@ pub enum HintValue {
 
 /// Notification timeout, until close
 #[derive(Debug, Clone, Copy)]
-#[cfg_attr(feature = "clap", derive(clap::ValueEnum))]
 pub enum Timeout {
     #[allow(missing_docs)]
     Default,
