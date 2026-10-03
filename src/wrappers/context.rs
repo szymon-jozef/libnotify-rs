@@ -1,4 +1,7 @@
-use crate::api::functions::{init, is_initted, set_app_icon, set_app_name, uninit};
+use crate::api::{
+    errors::LibnotifyError,
+    functions::{init, is_initted, set_app_icon, set_app_name, uninit},
+};
 
 /// Notification context. Handles libnotify initializing and uninitializing.
 pub struct LibnotifyContext {}
@@ -25,13 +28,13 @@ impl LibnotifyContext {
     }
 
     /// Sets global app name
-    pub fn set_new_name(&self, app_name: &str) -> Result<(), std::ffi::NulError> {
+    pub fn set_new_name(&self, app_name: &str) -> Result<(), LibnotifyError> {
         set_app_name(app_name)?;
         Ok(())
     }
 
     /// Sets global app icon
-    pub fn set_app_icon(&self, app_icon: &str) -> Result<(), std::ffi::NulError> {
+    pub fn set_app_icon(&self, app_icon: &str) -> Result<(), LibnotifyError> {
         set_app_icon(app_icon)?;
         Ok(())
     }
