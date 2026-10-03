@@ -273,19 +273,19 @@ impl<'a> Notification {
     }
 
     /// Tells the notification server to display the notification on the screen
-    pub fn show(&self) -> Result<(), Box<dyn std::error::Error>> {
+    pub fn show(&self) -> Result<(), LibnotifyError> {
         let mut gerror = std::ptr::null_mut() as *mut GError;
 
         if unsafe { notify_notification_show(self.inner, &mut gerror) } == 0 {
             if gerror.is_null() {
-                return Err("Unknown error".into());
+                return Err(LibnotifyError::AllocationError);
             }
 
             let err_msg = unsafe { *gerror }.message;
 
             if err_msg.is_null() {
                 unsafe { g_error_free(gerror) };
-                return Err("Unknown error".into());
+                return Err(LibnotifyError::AllocationError);
             }
 
             let err_msg_str = unsafe { std::ffi::CStr::from_ptr(err_msg) }
@@ -293,7 +293,7 @@ impl<'a> Notification {
                 .to_string();
 
             unsafe { g_error_free(gerror) };
-            return Err(err_msg_str.into());
+            return Err(LibnotifyError::GerrorError(err_msg_str));
         }
 
         Ok(())
