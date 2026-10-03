@@ -11,6 +11,9 @@ license = "MIT"
 keywords = [ "bindings", "libnotify" ]
 build = "./build.rs"
 
+[dependencies]
+clap = {version = "4.6.7", optional = true}
+
 [build-dependencies]
 pkg-config = "0.3.34"
 bindgen = "0.73.2"
@@ -18,3 +21,6 @@ bindgen = "0.73.2"
 [dev-dependencies]
 glib = "0.22.10"
 serial_test = "4.0.1"
+
+[features]
+clap = [ "dep:clap" ]

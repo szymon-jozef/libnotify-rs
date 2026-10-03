@@ -3,6 +3,7 @@ use crate::api::errors::LibnotifyError;
 use super::libnotify::*;
 
 #[derive(Debug, Clone, Copy)]
+#[cfg_attr(feature = "clap", derive(clap::ValueEnum))]
 /// Notification urgency level. Refer to [libnotify docs](https://gnome.pages.gitlab.gnome.org/libnotify/enum.Urgency.html) for more info
 pub enum Urgency {
     /// Low urgency. Used for unimportant notifications
@@ -46,6 +47,7 @@ pub enum HintValue {
 
 /// Notification timeout, until close
 #[derive(Debug, Clone, Copy)]
+#[cfg_attr(feature = "clap", derive(clap::ValueEnum))]
 pub enum Timeout {
     #[allow(missing_docs)]
     Default,
