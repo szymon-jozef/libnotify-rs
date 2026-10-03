@@ -1,3 +1,5 @@
+use crate::api::errors::LibnotifyError;
+
 use super::libnotify::*;
 
 #[derive(Debug, Clone, Copy)]
@@ -67,7 +69,7 @@ impl<'a> Notification {
     /// the position of the nul byte.
     ///
     /// On libnotify fail it will return Err(&str.into). May change in the future.
-    pub fn new<T, Y>(summary: &str, body: T, icon: Y) -> Result<Self, Box<dyn std::error::Error>>
+    pub fn new<T, Y>(summary: &str, body: T, icon: Y) -> Result<Self, LibnotifyError>
     where
         T: Into<Option<&'a str>>,
         Y: Into<Option<&'a str>>,
@@ -87,7 +89,7 @@ impl<'a> Notification {
         };
 
         if inner.is_null() {
-            return Err("notify_notification_new returned null".into());
+            return Err(LibnotifyError::NewNotificationError);
         }
 
         Ok(Self { inner })
@@ -107,7 +109,7 @@ impl<'a> Notification {
         action: &str,
         label: &str,
         callback: F,
-    ) -> Result<(), Box<dyn std::error::Error>>
+    ) -> Result<(), LibnotifyError>
     where
         F: Fn(&str) + 'static,
     {
@@ -144,19 +146,19 @@ impl<'a> Notification {
     }
 
     /// Synchronously tells the notification server to hide the notification on the screen
-    pub fn close(&self) -> Result<(), Box<dyn std::error::Error>> {
+    pub fn close(&self) -> Result<(), LibnotifyError> {
         let mut gerror = std::ptr::null_mut() as *mut GError;
 
         if unsafe { notify_notification_close(self.inner, &mut gerror) } == 0 {
             if gerror.is_null() {
-                return Err("Unknown error".into());
+                return Err(LibnotifyError::AllocationError);
             }
 
             let e = unsafe { *gerror }.message;
 
             if e.is_null() {
                 unsafe { g_error_free(gerror) };
-                return Err("Unknown error".into());
+                return Err(LibnotifyError::AllocationError);
             }
 
             let e_str = unsafe { std::ffi::CStr::from_ptr(e) }
@@ -165,7 +167,7 @@ impl<'a> Notification {
 
             unsafe { g_error_free(gerror) };
 
-            return Err(e_str.into());
+            return Err(LibnotifyError::GerrorError(e_str));
         }
 
         Ok(())
@@ -191,7 +193,7 @@ impl<'a> Notification {
     /// `set_app_icon()`.
     ///
     /// Available since: 0.8.4
-    pub fn set_app_icon(&mut self, app_icon: &str) -> Result<(), std::ffi::NulError> {
+    pub fn set_app_icon(&mut self, app_icon: &str) -> Result<(), LibnotifyError> {
         let app_icon_c = std::ffi::CString::new(app_icon)?;
         unsafe { notify_notification_set_app_icon(self.inner, app_icon_c.as_ptr()) };
 
@@ -203,7 +205,7 @@ impl<'a> Notification {
     /// If this function is not called, the application name will be set from the value used in init() or overridden with set_app_name().
     ///
     /// Available since: 0.7.3
-    pub fn set_app_name(&mut self, app_name: &str) -> Result<(), std::ffi::NulError> {
+    pub fn set_app_name(&mut self, app_name: &str) -> Result<(), LibnotifyError> {
         let app_name_c = std::ffi::CString::new(app_name)?;
         unsafe { notify_notification_set_app_name(self.inner, app_name_c.as_ptr()) };
 
@@ -213,7 +215,7 @@ impl<'a> Notification {
     /// Sets the category of this notification.
     ///
     /// This can be used by the notification server to filter or display the data in a certain way
-    pub fn set_category(&mut self, category: &str) -> Result<(), std::ffi::NulError> {
+    pub fn set_category(&mut self, category: &str) -> Result<(), LibnotifyError> {
         let category_c = std::ffi::CString::new(category)?;
         unsafe { notify_notification_set_category(self.inner, category_c.as_ptr()) };
 
@@ -223,11 +225,7 @@ impl<'a> Notification {
     /// Sets a hint for key with value value
     ///
     /// Available since: 0.6
-    pub fn set_hint(
-        &mut self,
-        key: &str,
-        value: HintValue,
-    ) -> Result<(), Box<dyn std::error::Error>> {
+    pub fn set_hint(&mut self, key: &str, value: HintValue) -> Result<(), LibnotifyError> {
         let key_c = std::ffi::CString::new(key)?;
 
         let value_c = match value {
@@ -242,7 +240,7 @@ impl<'a> Notification {
         };
 
         if value_c.is_null() {
-            return Err("Couldn't create hint value".into());
+            return Err(LibnotifyError::AllocationError);
         }
 
         unsafe { notify_notification_set_hint(self.inner, key_c.as_ptr(), value_c) };

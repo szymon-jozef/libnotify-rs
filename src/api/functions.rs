@@ -26,7 +26,7 @@ where
         )
     } == 0
     {
-        return Err(LibnotifyError::InitFail);
+        return Err(LibnotifyError::InitError);
     }
 
     Ok(())
