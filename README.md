@@ -27,8 +27,10 @@ Available at [github pages](https://szymon-jozef.github.io/libnotify-rs/libnotif
 ## Add to project
 Type in:
 ```bash
-cargo add --git "https://github.com/szymon-jozef/libnotify-rs"
+cargo add --git "https://github.com/szymon-jozef/libnotify-rs" --tag <desired version>
 ```
+
+Tag argument is optional, but encouraged.
 
 ### Nix flake
 For nix users, there is also a flake inside. If you want to use it add this to your flake:
