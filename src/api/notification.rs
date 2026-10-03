@@ -65,11 +65,7 @@ impl<'a> Notification {
     /// Create new notification.
     ///
     /// # Errors
-    /// This function will return an error if the supplied bytes contain an
-    /// internal 0 byte. The [`NulError`](https://doc.rust-lang.org/stable/alloc/ffi/c_str/struct.NulError.html) returned will contain the bytes as well as
-    /// the position of the nul byte.
-    ///
-    /// On libnotify fail it will return Err(&str.into). May change in the future.
+    /// This function can return LibnotifyError::{NewNotificationError, NulError}
     pub fn new<T, Y>(summary: &str, body: T, icon: Y) -> Result<Self, LibnotifyError>
     where
         T: Into<Option<&'a str>>,
@@ -105,6 +101,9 @@ impl<'a> Notification {
     /// `label` – label for user
     ///
     /// `callback` - any closure that accepts &str as an argument, where &str is action name.
+    ///
+    /// # Errors
+    /// This function can return LibnotifyError::NulError
     pub fn add_action<F>(
         &mut self,
         action: &str,
@@ -147,6 +146,9 @@ impl<'a> Notification {
     }
 
     /// Synchronously tells the notification server to hide the notification on the screen
+    ///
+    /// # Errors
+    /// This function can return LibnotifyError::{AllocationError, GerrorError}
     pub fn close(&self) -> Result<(), LibnotifyError> {
         let mut gerror = std::ptr::null_mut() as *mut GError;
 
@@ -194,6 +196,9 @@ impl<'a> Notification {
     /// `set_app_icon()`.
     ///
     /// Available since: 0.8.4
+    ///
+    /// # Errors
+    /// This function can return LibnotifyError::{NulError}
     pub fn set_app_icon(&mut self, app_icon: &str) -> Result<(), LibnotifyError> {
         let app_icon_c = std::ffi::CString::new(app_icon)?;
         unsafe { notify_notification_set_app_icon(self.inner, app_icon_c.as_ptr()) };
@@ -206,6 +211,9 @@ impl<'a> Notification {
     /// If this function is not called, the application name will be set from the value used in init() or overridden with set_app_name().
     ///
     /// Available since: 0.7.3
+    ///
+    /// # Errors
+    /// This function can return LibnotifyError::{NulError}
     pub fn set_app_name(&mut self, app_name: &str) -> Result<(), LibnotifyError> {
         let app_name_c = std::ffi::CString::new(app_name)?;
         unsafe { notify_notification_set_app_name(self.inner, app_name_c.as_ptr()) };
@@ -216,6 +224,9 @@ impl<'a> Notification {
     /// Sets the category of this notification.
     ///
     /// This can be used by the notification server to filter or display the data in a certain way
+    ///
+    /// # Errors
+    /// This function can return LibnotifyError::{NulError}
     pub fn set_category(&mut self, category: &str) -> Result<(), LibnotifyError> {
         let category_c = std::ffi::CString::new(category)?;
         unsafe { notify_notification_set_category(self.inner, category_c.as_ptr()) };
@@ -226,6 +237,9 @@ impl<'a> Notification {
     /// Sets a hint for key with value value
     ///
     /// Available since: 0.6
+    ///
+    /// # Errors
+    /// This function can return LibnotifyError::{NulError, AllocationError}
     pub fn set_hint(&mut self, key: &str, value: HintValue) -> Result<(), LibnotifyError> {
         let key_c = std::ffi::CString::new(key)?;
 
@@ -274,6 +288,9 @@ impl<'a> Notification {
     }
 
     /// Tells the notification server to display the notification on the screen
+    ///
+    /// # Errors
+    /// This function can return LibnotifyError::{GerrorError, AllocationError}
     pub fn show(&self) -> Result<(), LibnotifyError> {
         let mut gerror = std::ptr::null_mut() as *mut GError;
 
@@ -303,12 +320,15 @@ impl<'a> Notification {
     /// Updates the notification text and icon.
     ///
     /// This won’t send the update out and display it on the screen. For that, you will need to call `show()`.
+    ///
+    /// # Errors
+    /// This function can return LibnotifyError::{NulError}
     pub fn update<'b, F, I>(
         &mut self,
         summary: &str,
         body: F,
         icon: I,
-    ) -> Result<(), std::ffi::NulError>
+    ) -> Result<(), LibnotifyError>
     where
         F: Into<Option<&'b str>>,
         I: Into<Option<&'b str>>,

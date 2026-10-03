@@ -12,6 +12,9 @@ use super::libnotify::*;
 /// Initialized libnotify. This must be called before any other functions.
 ///
 /// Starting from 0.8, if the provided app_name is NULL, libnotify will try to figure it out from the running application. Before it was not allowed, and was causing libnotify not to be initialized.
+///
+/// # Errors
+/// This function can return LibnotifyError::{InitError, NulError}
 pub fn init<'a, T>(app_name: T) -> Result<(), LibnotifyError>
 where
     T: Into<Option<&'a str>>,
@@ -163,6 +166,9 @@ pub fn get_server_info() -> Option<ServerInfo> {
 */
 
 /// Sets the application name
+///
+/// # Errors
+/// This function can return LibnotifyError::NulError
 pub fn set_app_name(app_name: &str) -> Result<(), LibnotifyError> {
     let app_name_c = std::ffi::CString::new(app_name)?;
     unsafe { notify_set_app_name(app_name_c.as_ptr()) };
@@ -174,6 +180,9 @@ pub fn set_app_name(app_name: &str) -> Result<(), LibnotifyError> {
 /// Available since: 0.8.4
 ///
 /// app_icon is icon name or path to an image
+///
+/// # Errors
+/// This function can return LibnotifyError::NulError
 pub fn set_app_icon(app_icon: &str) -> Result<(), LibnotifyError> {
     let app_icon_c = std::ffi::CString::new(app_icon)?;
     unsafe { notify_set_app_icon(app_icon_c.as_ptr()) };
