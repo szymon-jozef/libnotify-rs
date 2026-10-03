@@ -1,5 +1,8 @@
 use crate::{
-    api::notification::{HintValue, Notification, Timeout, Urgency},
+    api::{
+        errors::LibnotifyError,
+        notification::{HintValue, Notification, Timeout, Urgency},
+    },
     wrappers::context::LibnotifyContext,
 };
 
@@ -31,19 +34,19 @@ impl<'a> NotificationBuilder<'a> {
     }
 
     /// Sets app name for this specific notification.
-    pub fn set_app_name(mut self, app_name: &str) -> Result<Self, std::ffi::NulError> {
+    pub fn set_app_name(mut self, app_name: &str) -> Result<Self, LibnotifyError> {
         self.notification.set_app_name(app_name)?;
         Ok(self)
     }
 
     /// Sets app icon fot this specific notification.
-    pub fn set_app_icon(mut self, app_icon: &str) -> Result<Self, std::ffi::NulError> {
+    pub fn set_app_icon(mut self, app_icon: &str) -> Result<Self, LibnotifyError> {
         self.notification.set_app_icon(app_icon)?;
         Ok(self)
     }
 
     /// Sets category for this specific notification
-    pub fn set_category(mut self, category: &str) -> Result<Self, std::ffi::NulError> {
+    pub fn set_category(mut self, category: &str) -> Result<Self, LibnotifyError> {
         self.notification.set_category(category)?;
         Ok(self)
     }
