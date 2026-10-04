@@ -9,9 +9,25 @@ use super::libnotify::*;
  *(what a cool section comment)
 */
 
-/// Initialized libnotify. This must be called before any other functions.
+/// Initializes libnotify. This must be called before any other functions.
 ///
 /// Starting from 0.8, if the provided app_name is NULL, libnotify will try to figure it out from the running application. Before it was not allowed, and was causing libnotify not to be initialized.
+///
+/// # Example
+///
+/// ```
+/// use libnotify_rs::api::{
+///     functions::init,
+///     notification:: Notification,
+/// };
+///
+/// fn main() -> Result<(), Box<dyn std::error::Error>> {
+///     init("Test app")?; // we need to init libnotify __before__ any other libnotify code
+///     let notification = Notification::new("Test", None, None)?; // Some libnotify call
+///     Ok(())
+/// }
+///
+/// ```
 ///
 /// # Errors
 /// This function can return LibnotifyError::{InitError, NulError}
