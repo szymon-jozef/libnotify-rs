@@ -127,6 +127,20 @@ pub fn get_app_name() -> Option<String> {
 
 /// Gets the application icon registered.
 /// Available since: 0.8.4
+///
+/// # Example
+/// ```
+/// use libnotify_rs::api::functions::{get_app_icon, get_app_name, init, set_app_icon};
+///
+/// fn main() -> Result<(), Box<dyn std::error::Error>> {
+///     init("Test app")?;
+///     let icon = "gimp";
+///     set_app_icon(icon)?;
+///     let icon_gotten = get_app_icon().ok_or::<String>("No app icon set".into())?;
+///     assert_eq!(icon, icon_gotten);
+///     Ok(())
+/// }
+/// ```
 pub fn get_app_icon() -> Option<String> {
     let app_icon_c: *const std::os::raw::c_char = unsafe { notify_get_app_icon() };
 
