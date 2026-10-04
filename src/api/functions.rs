@@ -74,6 +74,20 @@ pub fn uninit() {
 }
 
 /// Gets whether or not libnotify is initialized.
+///
+/// # Example
+/// ```
+/// use libnotify_rs::api::functions::{init, is_initted};
+///
+/// fn main() -> Result<(), Box<dyn std::error::Error>> {
+///     if !is_initted() { // useful for conditional initing
+///         init("Test app")?;
+///     }
+///
+///     Ok(())
+/// }
+///
+/// ```
 pub fn is_initted() -> bool {
     unsafe { notify_is_initted() != 0 }
 }
