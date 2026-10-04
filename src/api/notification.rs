@@ -419,6 +419,27 @@ impl<'a> Notification {
     ///
     /// # Errors
     /// This function can return LibnotifyError::{GerrorError, AllocationError}
+    ///
+    /// # Example
+    /// ```no_run(No notification daemon on CI)
+    /// use libnotify_rs::api::{
+    ///     functions::{init, uninit},
+    ///     notification::{self, Notification},
+    /// };
+    ///
+    /// fn main() -> Result<(), Box<dyn std::error::Error>> {
+    ///     init("I love coffee")?;
+    ///     let mut notify = Notification::new(
+    ///         "Remember to drink coffe!",
+    ///         "Coffee is very important for your mental health!",
+    ///         None,
+    ///     )?;
+    ///
+    ///     notify.show()?;
+    ///
+    ///     Ok(())
+    /// }
+    /// ```
     pub fn show(&self) -> Result<(), LibnotifyError> {
         let mut gerror = std::ptr::null_mut() as *mut GError;
 
