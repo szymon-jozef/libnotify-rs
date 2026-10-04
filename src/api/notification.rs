@@ -472,6 +472,19 @@ impl<'a> Notification {
     ///
     /// # Errors
     /// This function can return LibnotifyError::{NulError}
+    ///
+    /// # Example
+    /// ```
+    /// use libnotify_rs::api::{functions::init, notification::Notification};
+    ///
+    /// fn main() -> Result<(), Box<dyn std::error::Error>> {
+    ///     init("Test app")?;
+    ///     let mut notification = Notification::new("My notification", "Yap yap", None)?;
+    ///     notification.update("My new summary", "My new body", None)?;
+    ///
+    ///     Ok(())
+    /// }
+    /// ```
     pub fn update<'b, F, I>(
         &mut self,
         summary: &str,
