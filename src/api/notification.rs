@@ -111,6 +111,8 @@ impl<'a> Notification {
 
     /// Add callback to notification.
     ///
+    /// This function needs a [glib mainloop](https://docs.gtk.org/glib/main-loop.html)
+    ///
     /// # Args
     /// `action` – action identifier. `default` will work for most use cases. Other text will be
     /// displayed as button names.
@@ -121,6 +123,39 @@ impl<'a> Notification {
     ///
     /// # Errors
     /// This function can return LibnotifyError::NulError
+    ///
+    /// # Example
+    /// ```no_run(There's no notification deamon on CI and no one to click the notification)
+    /// use glib::MainLoop;
+    /// use libnotify_rs::{
+    ///     api::functions::{init, uninit},
+    ///     api::notification::Notification,
+    /// };
+    ///
+    /// fn main() -> Result<(), Box<dyn std::error::Error>> {
+    ///     init("Coffee reminder")?;
+    ///     let mut notify = Notification::new("Drink coffee", "Click me when you're done drinking", None)?;
+    ///
+    ///     // We need to have  a glib main loop in order to receive callback actions
+    ///     let main_loop = MainLoop::new(None, false);
+    ///     let loop_clone = main_loop.clone();
+    ///
+    ///     notify.add_action("default", "I'm drinking!", move |action_name| {
+    ///         println!("User drunk his coffee!");
+    ///         println!("Action was named: {}", action_name);
+    ///         loop_clone.quit();
+    ///     })?;
+    ///
+    ///     notify.show()?;
+    ///     main_loop.run();
+    ///
+    ///     println!("Glib mainloop has ended");
+    ///
+    ///     uninit();
+    ///
+    ///     Ok(())
+    /// }
+    /// ```
     pub fn add_action<F>(
         &mut self,
         action: &str,
