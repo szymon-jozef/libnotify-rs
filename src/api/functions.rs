@@ -97,6 +97,20 @@ pub fn is_initted() -> bool {
 */
 
 /// Gets the application name registered.
+///
+/// # Example
+/// ```
+/// use libnotify_rs::api::functions::{get_app_name, init};
+///
+/// fn main() -> Result<(), Box<dyn std::error::Error>> {
+///     let app_name = "Test app";
+///     init(app_name)?;
+///     let app_name_gotten: String = get_app_name().ok_or::<String>("No name gotten".into())?;
+///     assert_eq!(app_name, app_name_gotten);
+///     Ok(())
+/// }
+///
+/// ```
 pub fn get_app_name() -> Option<String> {
     let app_name_c: *const std::os::raw::c_char = unsafe { notify_get_app_name() };
 
