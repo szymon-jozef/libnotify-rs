@@ -27,10 +27,8 @@ Available at [github pages](https://szymon-jozef.github.io/libnotify-rs/libnotif
 ## Add to project
 Type in:
 ```bash
-cargo add --git "https://github.com/szymon-jozef/libnotify-rs" --tag <desired version>
+cargo add libnotify-rs
 ```
-
-Tag argument is optional, but encouraged.
 
 ### Nix flake
 For nix users, there is also a flake inside. If you want to use it add this to your flake:
@@ -51,7 +49,7 @@ packages = [
 
 ## Dependencies
 To use this crate you need to have installed:
-- [libnotify](https://gitlab.gnome.org/GNOME/libnotify), duh (version 0.8.8 >= is supported)
+- [libnotify](https://gitlab.gnome.org/GNOME/libnotify), duh (version 0.8.8 >= is tested. Older versions may work, but are unsupported)
 - [clang](https://clang.llvm.org/) for bindgen
 - [pkg-config](https://www.freedesktop.org/wiki/Software/pkg-config/?__goaway_challenge=meta-refresh&__goaway_id=e567f4f3ff21df0fb2b589fc86ed197e&__goaway_referer=https%3A%2F%2Fsearch.brave.com%2F), to find the above
 

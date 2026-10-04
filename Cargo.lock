@@ -336,7 +336,7 @@ dependencies = [
 
 [[package]]
 name = "libnotify-rs"
-version = "0.3.1"
+version = "1.0.0"
 dependencies = [
  "bindgen",
  "clap",

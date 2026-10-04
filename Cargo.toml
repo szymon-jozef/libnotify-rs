@@ -1,14 +1,14 @@
 [package]
 name = "libnotify-rs"
-version = "0.3.1"
+version = "1.0.0"
 edition = "2024"
 authors = [ "szymon_jozef"]
 description = "Rust bindings for libnotify"
 readme = "./README.md"
-homepage = "https://github.com/szymon-jozef/libnotify-rs"
 repository = "https://github.com/szymon-jozef/libnotify-rs"
+documentation = "https://szymon-jozef.github.io/libnotify-rs/libnotify_rs/index.html"
 license = "MIT"
-keywords = [ "bindings", "libnotify" ]
+keywords = [ "bindings", "libnotify", "notificatons" ]
 build = "./build.rs"
 
 [dependencies]
