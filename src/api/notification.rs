@@ -66,6 +66,23 @@ impl<'a> Notification {
     ///
     /// # Errors
     /// This function can return LibnotifyError::{NewNotificationError, NulError}
+    ///
+    /// # Example
+    /// ```
+    ///
+    /// use libnotify_rs::api::{
+    ///     functions::{init, uninit},
+    ///     notification::Notification,
+    /// };
+    ///
+    /// fn main() -> Result<(), Box<dyn std::error::Error>> {
+    ///     init("Test app")?;
+    ///     let notification = Notification::new("My notification", "Yap yap", None)?;
+    ///     // ...
+    ///     uninit();
+    ///     Ok(())
+    /// }
+    /// ```
     pub fn new<T, Y>(summary: &str, body: T, icon: Y) -> Result<Self, LibnotifyError>
     where
         T: Into<Option<&'a str>>,
