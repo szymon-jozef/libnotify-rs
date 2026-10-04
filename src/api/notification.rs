@@ -273,6 +273,37 @@ impl<'a> Notification {
     /// Returns the closed reason code for the notification.
     ///
     /// This is valid only after the Notification::closed signal is emitted.
+    ///
+    /// This function needs a [glib mainloop](https://docs.gtk.org/glib/main-loop.html)
+    ///
+    /// # Example
+    /// ```no_run(No notificaton daemon on CI)
+    /// use glib::MainLoop;
+    /// use libnotify_rs::{
+    ///     api::functions::{init, uninit},
+    ///     api::notification::Notification,
+    /// };
+    ///
+    /// fn main() -> Result<(), Box<dyn std::error::Error>> {
+    ///     init("Coffee reminder")?;
+    ///     let mut notify = Notification::new("Drink coffee", "Click me when you're done drinking", None)?;
+    ///
+    ///     // We need to have  a glib main loop in order to receive closed_reason
+    ///     let main_loop = MainLoop::new(None, false);
+    ///     let loop_clone = main_loop.clone();
+    ///
+    ///     notify.show()?;
+    ///     main_loop.run();
+    ///
+    ///     // Thanks to the main loop we can also read why the notification was closed
+    ///     println!(
+    ///         "Notification closed, because: {:?}",
+    ///         notify.get_closed_reason()
+    ///     );
+    ///
+    ///     Ok(())
+    /// }
+    ///```
     pub fn get_closed_reason(&self) -> ClosedReason {
         match unsafe { notify_notification_get_closed_reason(self.inner) } {
             NotifyClosedReason_NOTIFY_CLOSED_REASON_UNSET => ClosedReason::Unset,
