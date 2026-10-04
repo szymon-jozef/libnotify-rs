@@ -66,6 +66,23 @@ impl<'a> Notification {
     ///
     /// # Errors
     /// This function can return LibnotifyError::{NewNotificationError, NulError}
+    ///
+    /// # Example
+    /// ```
+    ///
+    /// use libnotify_rs::api::{
+    ///     functions::{init, uninit},
+    ///     notification::Notification,
+    /// };
+    ///
+    /// fn main() -> Result<(), Box<dyn std::error::Error>> {
+    ///     init("Test app")?;
+    ///     let notification = Notification::new("My notification", "Yap yap", None)?;
+    ///     // ...
+    ///     uninit();
+    ///     Ok(())
+    /// }
+    /// ```
     pub fn new<T, Y>(summary: &str, body: T, icon: Y) -> Result<Self, LibnotifyError>
     where
         T: Into<Option<&'a str>>,
@@ -94,6 +111,8 @@ impl<'a> Notification {
 
     /// Add callback to notification.
     ///
+    /// This function needs a [glib mainloop](https://docs.gtk.org/glib/main-loop.html)
+    ///
     /// # Args
     /// `action` – action identifier. `default` will work for most use cases. Other text will be
     /// displayed as button names.
@@ -104,6 +123,39 @@ impl<'a> Notification {
     ///
     /// # Errors
     /// This function can return LibnotifyError::NulError
+    ///
+    /// # Example
+    /// ```no_run(There's no notification deamon on CI and no one to click the notification)
+    /// use glib::MainLoop;
+    /// use libnotify_rs::{
+    ///     api::functions::{init, uninit},
+    ///     api::notification::Notification,
+    /// };
+    ///
+    /// fn main() -> Result<(), Box<dyn std::error::Error>> {
+    ///     init("Coffee reminder")?;
+    ///     let mut notify = Notification::new("Drink coffee", "Click me when you're done drinking", None)?;
+    ///
+    ///     // We need to have  a glib main loop in order to receive callback actions
+    ///     let main_loop = MainLoop::new(None, false);
+    ///     let loop_clone = main_loop.clone();
+    ///
+    ///     notify.add_action("default", "I'm drinking!", move |action_name| {
+    ///         println!("User drunk his coffee!");
+    ///         println!("Action was named: {}", action_name);
+    ///         loop_clone.quit();
+    ///     })?;
+    ///
+    ///     notify.show()?;
+    ///     main_loop.run();
+    ///
+    ///     println!("Glib mainloop has ended");
+    ///
+    ///     uninit();
+    ///
+    ///     Ok(())
+    /// }
+    /// ```
     pub fn add_action<F>(
         &mut self,
         action: &str,
@@ -136,6 +188,32 @@ impl<'a> Notification {
     }
 
     /// Clears all actions from the notification
+    ///
+    /// # Example
+    /// ```
+    /// use libnotify_rs::api::{
+    ///     functions::{init, uninit},
+    ///     notification::Notification,
+    /// };
+    ///
+    /// fn main() -> Result<(), Box<dyn std::error::Error>> {
+    ///     init("Test app")?;
+    ///     let mut notification = Notification::new("My notification", "Yap yap", None)?;
+    ///     notification.add_action("default", "yap", |action| {
+    ///         // do stuff
+    ///     })?;
+    ///
+    ///     notification.add_action("click", "yappers", |action| {
+    ///         // do some other stuff
+    ///     })?;
+    ///
+    ///     notification.clear_actions(); // now there are no callbacks!
+    ///
+    ///     uninit();
+    ///     Ok(())
+    /// }
+    /// ```
+    ///
     pub fn clear_actions(&mut self) {
         unsafe { notify_notification_clear_actions(self.inner) }
     }
@@ -149,6 +227,22 @@ impl<'a> Notification {
     ///
     /// # Errors
     /// This function can return LibnotifyError::{AllocationError, GerrorError}
+    ///
+    /// # Example
+    /// ```no_run(Not notification deamon on CI)
+    /// use libnotify_rs::api::{functions::init, notification::Notification};
+    ///
+    /// fn main() -> Result<(), Box<dyn std::error::Error>> {
+    ///     init("Test app")?;
+    ///     let notification = Notification::new("My notification", "Yap yap", None)?;
+    ///     notification.show()?;
+    ///     std::thread::sleep(std::time::Duration::from_secs(5)); // To do this you can just set duration,
+    ///     // but this is an example
+    ///     notification.close()?; // After 5 seconds no notification
+    ///
+    ///     Ok(())
+    /// }
+    /// ```
     pub fn close(&self) -> Result<(), LibnotifyError> {
         let mut gerror = std::ptr::null_mut() as *mut GError;
 
@@ -179,6 +273,37 @@ impl<'a> Notification {
     /// Returns the closed reason code for the notification.
     ///
     /// This is valid only after the Notification::closed signal is emitted.
+    ///
+    /// This function needs a [glib mainloop](https://docs.gtk.org/glib/main-loop.html)
+    ///
+    /// # Example
+    /// ```no_run(No notificaton daemon on CI)
+    /// use glib::MainLoop;
+    /// use libnotify_rs::{
+    ///     api::functions::{init, uninit},
+    ///     api::notification::Notification,
+    /// };
+    ///
+    /// fn main() -> Result<(), Box<dyn std::error::Error>> {
+    ///     init("Coffee reminder")?;
+    ///     let mut notify = Notification::new("Drink coffee", "Click me when you're done drinking", None)?;
+    ///
+    ///     // We need to have  a glib main loop in order to receive closed_reason
+    ///     let main_loop = MainLoop::new(None, false);
+    ///     let loop_clone = main_loop.clone();
+    ///
+    ///     notify.show()?;
+    ///     main_loop.run();
+    ///
+    ///     // Thanks to the main loop we can also read why the notification was closed
+    ///     println!(
+    ///         "Notification closed, because: {:?}",
+    ///         notify.get_closed_reason()
+    ///     );
+    ///
+    ///     Ok(())
+    /// }
+    ///```
     pub fn get_closed_reason(&self) -> ClosedReason {
         match unsafe { notify_notification_get_closed_reason(self.inner) } {
             NotifyClosedReason_NOTIFY_CLOSED_REASON_UNSET => ClosedReason::Unset,
@@ -192,8 +317,11 @@ impl<'a> Notification {
 
     /// Sets the application icon for the notification.
     ///
+    /// Refer to the [documentation](https://specifications.freedesktop.org/icon-naming/latest/) for
+    /// icon names.
+    ///
     /// If this function is not called, the application icon will be set from the value set via
-    /// `set_app_icon()`.
+    /// `set_app_icon()`. Usage is the same.
     ///
     /// Available since: 0.8.4
     ///
@@ -208,7 +336,7 @@ impl<'a> Notification {
 
     /// Sets the application name for the notification.
     ///
-    /// If this function is not called, the application name will be set from the value used in init() or overridden with set_app_name().
+    /// If this function is not called, the application name will be set from the value used in init() or overridden with set_app_name(). Usage is the same.
     ///
     /// Available since: 0.7.3
     ///
@@ -225,6 +353,8 @@ impl<'a> Notification {
     ///
     /// This can be used by the notification server to filter or display the data in a certain way
     ///
+    /// The only reference to what this even is, is [this thread](https://unix.stackexchange.com/questions/251243/what-do-a-notify-send-notification-category-hint-and-version-parameters-mean). If you know how to use this bad boy, have fun :D
+    ///
     /// # Errors
     /// This function can return LibnotifyError::{NulError}
     pub fn set_category(&mut self, category: &str) -> Result<(), LibnotifyError> {
@@ -237,6 +367,9 @@ impl<'a> Notification {
     /// Sets a hint for key with value value
     ///
     /// Available since: 0.6
+    ///
+    ///
+    /// The only reference to what this even is, is [this thread](https://unix.stackexchange.com/questions/251243/what-do-a-notify-send-notification-category-hint-and-version-parameters-mean). If you know how to use this bad boy, have fun :D
     ///
     /// # Errors
     /// This function can return LibnotifyError::{NulError, AllocationError}
@@ -266,6 +399,26 @@ impl<'a> Notification {
     /// Sets the timeout of the notification.
     ///
     /// Note that the timeout may be ignored by the server.
+    ///
+    /// # Example
+    /// ```
+    /// use libnotify_rs::api::{
+    ///     functions::{init, uninit},
+    ///     notification::{self, Notification},
+    /// };
+    ///
+    /// fn main() -> Result<(), Box<dyn std::error::Error>> {
+    ///     init("I love coffee")?;
+    ///     let mut notify = Notification::new(
+    ///         "Remember to drink coffe!",
+    ///         "Coffee is very important for your mental health!",
+    ///         None,
+    ///     )?;
+    ///
+    ///     notify.set_timeout(notification::Timeout::Custom(1000 * 10)); // 10 secs
+    ///     Ok(())
+    /// }
+    /// ```
     pub fn set_timeout(&mut self, timeout: Timeout) {
         let timeout_c = match timeout {
             Timeout::Default => NOTIFY_EXPIRES_DEFAULT,
@@ -277,6 +430,25 @@ impl<'a> Notification {
     }
 
     /// Sets the urgency level of this notification
+    /// # Example
+    /// ```
+    /// use libnotify_rs::api::{
+    ///     functions::{init, uninit},
+    ///     notification::{self, Notification},
+    /// };
+    ///
+    /// fn main() -> Result<(), Box<dyn std::error::Error>> {
+    ///     init("I love coffee")?;
+    ///     let mut notify = Notification::new(
+    ///         "Remember to drink coffe!",
+    ///         "Coffee is very important for your mental health!",
+    ///         None,
+    ///     )?;
+    ///
+    ///     notify.set_urgency(notification::Urgency::Critical); // coffee is very important
+    ///     Ok(())
+    /// }
+    /// ```
     pub fn set_urgency(&mut self, urgency: Urgency) {
         let urgency: u32 = match urgency {
             Urgency::Low => NotifyUrgency_NOTIFY_URGENCY_LOW,
@@ -291,6 +463,27 @@ impl<'a> Notification {
     ///
     /// # Errors
     /// This function can return LibnotifyError::{GerrorError, AllocationError}
+    ///
+    /// # Example
+    /// ```no_run(No notification daemon on CI)
+    /// use libnotify_rs::api::{
+    ///     functions::{init, uninit},
+    ///     notification::{self, Notification},
+    /// };
+    ///
+    /// fn main() -> Result<(), Box<dyn std::error::Error>> {
+    ///     init("I love coffee")?;
+    ///     let mut notify = Notification::new(
+    ///         "Remember to drink coffe!",
+    ///         "Coffee is very important for your mental health!",
+    ///         None,
+    ///     )?;
+    ///
+    ///     notify.show()?;
+    ///
+    ///     Ok(())
+    /// }
+    /// ```
     pub fn show(&self) -> Result<(), LibnotifyError> {
         let mut gerror = std::ptr::null_mut() as *mut GError;
 
@@ -323,6 +516,19 @@ impl<'a> Notification {
     ///
     /// # Errors
     /// This function can return LibnotifyError::{NulError}
+    ///
+    /// # Example
+    /// ```
+    /// use libnotify_rs::api::{functions::init, notification::Notification};
+    ///
+    /// fn main() -> Result<(), Box<dyn std::error::Error>> {
+    ///     init("Test app")?;
+    ///     let mut notification = Notification::new("My notification", "Yap yap", None)?;
+    ///     notification.update("My new summary", "My new body", None)?;
+    ///
+    ///     Ok(())
+    /// }
+    /// ```
     pub fn update<'b, F, I>(
         &mut self,
         summary: &str,
@@ -362,6 +568,7 @@ impl Drop for Notification {
     }
 }
 
+/// This function translates c callback to rust. Used in `add_action`
 unsafe extern "C" fn action_trampoline<F>(
     _notification: *mut NotifyNotification,
     action: *mut ::std::os::raw::c_char,
@@ -379,6 +586,7 @@ unsafe extern "C" fn action_trampoline<F>(
     callback(&action);
 }
 
+/// This function tells c how to free memory of our callback
 unsafe extern "C" fn drop_box<F>(data: gpointer) {
     unsafe { drop(Box::from_raw(data as *mut F)) };
 }
@@ -414,4 +622,7 @@ mod tests {
                 .is_null()
         );
     }
+
+    // I meant to write more tests, but I'm to lazy :3
+    // Doctests should suffice
 }

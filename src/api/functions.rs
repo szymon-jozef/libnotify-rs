@@ -9,9 +9,25 @@ use super::libnotify::*;
  *(what a cool section comment)
 */
 
-/// Initialized libnotify. This must be called before any other functions.
+/// Initializes libnotify. This must be called before any other functions.
 ///
 /// Starting from 0.8, if the provided app_name is NULL, libnotify will try to figure it out from the running application. Before it was not allowed, and was causing libnotify not to be initialized.
+///
+/// # Example
+///
+/// ```
+/// use libnotify_rs::api::{
+///     functions::init,
+///     notification:: Notification,
+/// };
+///
+/// fn main() -> Result<(), Box<dyn std::error::Error>> {
+///     init("Test app")?; // we need to init libnotify __before__ any other libnotify code
+///     let notification = Notification::new("Test", None, None)?; // Some libnotify call
+///     Ok(())
+/// }
+///
+/// ```
 ///
 /// # Errors
 /// This function can return LibnotifyError::{InitError, NulError}
@@ -38,6 +54,19 @@ where
 /// Uninitializes libnotify.
 ///
 /// This should be called when the program no longer needs libnotify for the rest of its lifecycle, typically just before exitting.
+///
+/// # Example
+/// ```
+/// use libnotify_rs::api::functions::{init, uninit};
+///
+/// fn main() -> Result<(), Box<dyn std::error::Error>> {
+///     init("Test app")?;
+///     // let notify = ...
+///     uninit(); // __always__ uninit libnotify after use
+///     Ok(())
+/// }
+///
+/// ```
 pub fn uninit() {
     unsafe {
         notify_uninit();
@@ -45,6 +74,20 @@ pub fn uninit() {
 }
 
 /// Gets whether or not libnotify is initialized.
+///
+/// # Example
+/// ```
+/// use libnotify_rs::api::functions::{init, is_initted};
+///
+/// fn main() -> Result<(), Box<dyn std::error::Error>> {
+///     if !is_initted() { // useful for conditional initing
+///         init("Test app")?;
+///     }
+///
+///     Ok(())
+/// }
+///
+/// ```
 pub fn is_initted() -> bool {
     unsafe { notify_is_initted() != 0 }
 }
@@ -54,6 +97,20 @@ pub fn is_initted() -> bool {
 */
 
 /// Gets the application name registered.
+///
+/// # Example
+/// ```
+/// use libnotify_rs::api::functions::{get_app_name, init};
+///
+/// fn main() -> Result<(), Box<dyn std::error::Error>> {
+///     let app_name = "Test app";
+///     init(app_name)?;
+///     let app_name_gotten: String = get_app_name().ok_or::<String>("No name gotten".into())?;
+///     assert_eq!(app_name, app_name_gotten);
+///     Ok(())
+/// }
+///
+/// ```
 pub fn get_app_name() -> Option<String> {
     let app_name_c: *const std::os::raw::c_char = unsafe { notify_get_app_name() };
 
@@ -70,6 +127,20 @@ pub fn get_app_name() -> Option<String> {
 
 /// Gets the application icon registered.
 /// Available since: 0.8.4
+///
+/// # Example
+/// ```
+/// use libnotify_rs::api::functions::{get_app_icon, get_app_name, init, set_app_icon};
+///
+/// fn main() -> Result<(), Box<dyn std::error::Error>> {
+///     init("Test app")?;
+///     let icon = "gimp";
+///     set_app_icon(icon)?;
+///     let icon_gotten = get_app_icon().ok_or::<String>("No app icon set".into())?;
+///     assert_eq!(icon, icon_gotten);
+///     Ok(())
+/// }
+/// ```
 pub fn get_app_icon() -> Option<String> {
     let app_icon_c: *const std::os::raw::c_char = unsafe { notify_get_app_icon() };
 
@@ -86,6 +157,27 @@ pub fn get_app_icon() -> Option<String> {
 
 /// Queries the server capabilities.
 /// Synchronously queries the server for its capabilities and returns them in a list.
+///
+/// # Example
+/// ```
+/// use libnotify_rs::api::functions::{self, uninit};
+///
+/// fn main() -> Result<(), Box<dyn std::error::Error>> {
+///     functions::init("Test app")?;
+///
+///     if let Some(caps) = functions::get_server_caps() {
+///         println!("=== Server caps ===");
+///         for s in caps {
+///             println!("{}", s);
+///         }
+///     } else {
+///         eprintln!("No server caps");
+///     }
+///     
+///     Ok(())
+/// }
+///
+/// ```
 pub fn get_server_caps() -> Option<Vec<String>> {
     let mut vec: Vec<String> = vec![];
 
@@ -135,6 +227,41 @@ pub struct ServerInfo {
 
 /// Queries the server for information.
 /// Synchronously queries the server for its information, specifically, the name, vendor, server version, and the version of the notifications specification that it is compliant with.
+///
+/// # Example
+/// ```
+///
+/// use libnotify_rs::api::functions::{self, uninit};
+///
+/// fn main() -> Result<(), Box<dyn std::error::Error>> {
+///     functions::init("Test app")?;
+///
+///     if let Some(info) = functions::get_server_info() {
+///         println!("=== Server info ===");
+///         if let Some(name) = info.name {
+///             println!("Server name: {}", name);
+///         }
+///
+///         if let Some(vendor) = info.vendor {
+///             println!("Server vendor: {}", vendor);
+///         }
+///
+///         if let Some(version) = info.version {
+///             println!("Server version: {}", version);
+///         }
+///
+///         if let Some(spec_version) = info.spec_version {
+///             println!("Server spec version: {}", spec_version);
+///         }
+///     } else {
+///         eprintln!("No server info");
+///     }
+///
+///     uninit();
+///
+///     Ok(())
+/// }
+/// ```
 pub fn get_server_info() -> Option<ServerInfo> {
     let mut ret_name = std::ptr::null_mut() as *mut std::os::raw::c_char;
     let mut ret_vendor = std::ptr::null_mut() as *mut std::os::raw::c_char;
@@ -169,6 +296,19 @@ pub fn get_server_info() -> Option<ServerInfo> {
 ///
 /// # Errors
 /// This function can return LibnotifyError::NulError
+///
+/// # Example
+/// ```
+/// use libnotify_rs::api::functions::{get_app_name, init, set_app_name};
+///
+/// fn main() -> Result<(), Box<dyn std::error::Error>> {
+///     init("Test app")?;
+///     let app_name = "morbius app";
+///     set_app_name(app_name)?;
+///     assert_eq!(app_name, get_app_name().unwrap());
+///     Ok(())
+/// }
+/// ```
 pub fn set_app_name(app_name: &str) -> Result<(), LibnotifyError> {
     let app_name_c = std::ffi::CString::new(app_name)?;
     unsafe { notify_set_app_name(app_name_c.as_ptr()) };
@@ -183,6 +323,19 @@ pub fn set_app_name(app_name: &str) -> Result<(), LibnotifyError> {
 ///
 /// # Errors
 /// This function can return LibnotifyError::NulError
+///
+/// # Example
+/// ```
+/// use libnotify_rs::api::functions::{get_app_icon, init, set_app_icon};
+///
+/// fn main() -> Result<(), Box<dyn std::error::Error>> {
+///     init("Test app")?;
+///     let app_icon = "morbius app";
+///     set_app_icon(app_icon)?;
+///     assert_eq!(app_icon, get_app_icon().unwrap());
+///     Ok(())
+/// }
+/// ```
 pub fn set_app_icon(app_icon: &str) -> Result<(), LibnotifyError> {
     let app_icon_c = std::ffi::CString::new(app_icon)?;
     unsafe { notify_set_app_icon(app_icon_c.as_ptr()) };

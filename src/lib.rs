@@ -10,12 +10,13 @@
 //!
 //! # Features
 //!
-//! - clap – enables [clap] support for `Urgency`
+//! - clap – enables [clap](https://docs.rs/clap/latest/clap/) support for `Urgency`
 //!
 #![allow(non_upper_case_globals)]
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
 #![warn(missing_docs)]
+#![warn(clippy::missing_errors_doc)]
 
 #[cfg(not(target_os = "linux"))]
 compile_error!("Libnotify-rs only supports linux");
