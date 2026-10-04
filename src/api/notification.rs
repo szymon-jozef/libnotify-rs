@@ -188,6 +188,32 @@ impl<'a> Notification {
     }
 
     /// Clears all actions from the notification
+    ///
+    /// # Example
+    /// ```
+    /// use libnotify_rs::api::{
+    ///     functions::{init, uninit},
+    ///     notification::Notification,
+    /// };
+    ///
+    /// fn main() -> Result<(), Box<dyn std::error::Error>> {
+    ///     init("Test app")?;
+    ///     let mut notification = Notification::new("My notification", "Yap yap", None)?;
+    ///     notification.add_action("default", "yap", |action| {
+    ///         // do stuff
+    ///     })?;
+    ///
+    ///     notification.add_action("click", "yappers", |action| {
+    ///         // do some other stuff
+    ///     })?;
+    ///
+    ///     notification.clear_actions(); // now there are no callbacks!
+    ///
+    ///     uninit();
+    ///     Ok(())
+    /// }
+    /// ```
+    ///
     pub fn clear_actions(&mut self) {
         unsafe { notify_notification_clear_actions(self.inner) }
     }
