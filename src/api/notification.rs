@@ -405,6 +405,25 @@ impl<'a> Notification {
     }
 
     /// Sets the urgency level of this notification
+    /// # Example
+    /// ```
+    /// use libnotify_rs::api::{
+    ///     functions::{init, uninit},
+    ///     notification::{self, Notification},
+    /// };
+    ///
+    /// fn main() -> Result<(), Box<dyn std::error::Error>> {
+    ///     init("I love coffee")?;
+    ///     let mut notify = Notification::new(
+    ///         "Remember to drink coffe!",
+    ///         "Coffee is very important for your mental health!",
+    ///         None,
+    ///     )?;
+    ///
+    ///     notify.set_urgency(notification::Urgency::Critical); // coffee is very important
+    ///     Ok(())
+    /// }
+    /// ```
     pub fn set_urgency(&mut self, urgency: Urgency) {
         let urgency: u32 = match urgency {
             Urgency::Low => NotifyUrgency_NOTIFY_URGENCY_LOW,
@@ -578,4 +597,7 @@ mod tests {
                 .is_null()
         );
     }
+
+    // I meant to write more tests, but I'm to lazy :3
+    // Doctests should suffice
 }
