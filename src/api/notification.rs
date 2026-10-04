@@ -227,6 +227,22 @@ impl<'a> Notification {
     ///
     /// # Errors
     /// This function can return LibnotifyError::{AllocationError, GerrorError}
+    ///
+    /// # Example
+    /// ```no_run(Not notification deamon on CI)
+    /// use libnotify_rs::api::{functions::init, notification::Notification};
+    ///
+    /// fn main() -> Result<(), Box<dyn std::error::Error>> {
+    ///     init("Test app")?;
+    ///     let notification = Notification::new("My notification", "Yap yap", None)?;
+    ///     notification.show()?;
+    ///     std::thread::sleep(std::time::Duration::from_secs(5)); // To do this you can just set duration,
+    ///     // but this is an example
+    ///     notification.close()?; // After 5 seconds no notification
+    ///
+    ///     Ok(())
+    /// }
+    /// ```
     pub fn close(&self) -> Result<(), LibnotifyError> {
         let mut gerror = std::ptr::null_mut() as *mut GError;
 
