@@ -270,6 +270,9 @@ impl<'a> Notification {
 
     /// Sets the application icon for the notification.
     ///
+    /// Refer to the [documentation](https://specifications.freedesktop.org/icon-naming/latest/) for
+    /// icon names.
+    ///
     /// If this function is not called, the application icon will be set from the value set via
     /// `set_app_icon()`.
     ///
