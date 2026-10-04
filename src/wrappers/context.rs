@@ -12,7 +12,7 @@ static IS_CONTEXT_CREATED: std::sync::atomic::AtomicBool =
 impl LibnotifyContext {
     /// Try initializing libnotify
     ///
-    /// # Error
+    /// # Errors
     /// Returns an error, if libnotify cannot be initialized or if there already exists a context
     /// object
     ///
@@ -41,12 +41,19 @@ impl LibnotifyContext {
     }
 
     /// Sets global app name
+    /// # Errors
+    ///
+    /// This function can return LibnotifyError::NulError
     pub fn set_new_name(&self, app_name: &str) -> Result<(), LibnotifyError> {
         set_app_name(app_name)?;
         Ok(())
     }
 
     /// Sets global app icon
+    ///
+    /// # Errors
+    ///
+    /// This function can return LibnotifyError::NulError
     pub fn set_app_icon(&self, app_icon: &str) -> Result<(), LibnotifyError> {
         set_app_icon(app_icon)?;
         Ok(())
