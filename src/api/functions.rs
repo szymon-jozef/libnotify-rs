@@ -157,6 +157,27 @@ pub fn get_app_icon() -> Option<String> {
 
 /// Queries the server capabilities.
 /// Synchronously queries the server for its capabilities and returns them in a list.
+///
+/// # Example
+/// ```
+/// use libnotify_rs::api::functions::{self, uninit};
+///
+/// fn main() -> Result<(), Box<dyn std::error::Error>> {
+///     functions::init("Test app")?;
+///
+///     if let Some(caps) = functions::get_server_caps() {
+///         println!("=== Server caps ===");
+///         for s in caps {
+///             println!("{}", s);
+///         }
+///     } else {
+///         eprintln!("No server caps");
+///     }
+///     
+///     Ok(())
+/// }
+///
+/// ```
 pub fn get_server_caps() -> Option<Vec<String>> {
     let mut vec: Vec<String> = vec![];
 
