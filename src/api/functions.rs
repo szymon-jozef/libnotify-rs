@@ -323,6 +323,19 @@ pub fn set_app_name(app_name: &str) -> Result<(), LibnotifyError> {
 ///
 /// # Errors
 /// This function can return LibnotifyError::NulError
+///
+/// # Example
+/// ```
+/// use libnotify_rs::api::functions::{get_app_icon, init, set_app_icon};
+///
+/// fn main() -> Result<(), Box<dyn std::error::Error>> {
+///     init("Test app")?;
+///     let app_icon = "morbius app";
+///     set_app_icon(app_icon)?;
+///     assert_eq!(app_icon, get_app_icon().unwrap());
+///     Ok(())
+/// }
+/// ```
 pub fn set_app_icon(app_icon: &str) -> Result<(), LibnotifyError> {
     let app_icon_c = std::ffi::CString::new(app_icon)?;
     unsafe { notify_set_app_icon(app_icon_c.as_ptr()) };
