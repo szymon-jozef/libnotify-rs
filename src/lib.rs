@@ -10,7 +10,7 @@
 //!
 //! # Features
 //!
-//! - clap – enables [clap] support for `Urgency`
+//! - clap – enables [clap](https://docs.rs/clap/latest/clap/) support for `Urgency`
 //!
 #![allow(non_upper_case_globals)]
 #![allow(non_camel_case_types)]
