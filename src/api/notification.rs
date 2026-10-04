@@ -394,6 +394,26 @@ impl<'a> Notification {
     /// Sets the timeout of the notification.
     ///
     /// Note that the timeout may be ignored by the server.
+    ///
+    /// # Example
+    /// ```
+    /// use libnotify_rs::api::{
+    ///     functions::{init, uninit},
+    ///     notification::{self, Notification},
+    /// };
+    ///
+    /// fn main() -> Result<(), Box<dyn std::error::Error>> {
+    ///     init("I love coffee")?;
+    ///     let mut notify = Notification::new(
+    ///         "Remember to drink coffe!",
+    ///         "Coffee is very important for your mental health!",
+    ///         None,
+    ///     )?;
+    ///
+    ///     notify.set_timeout(notification::Timeout::Custom(1000 * 10)); // 10 secs
+    ///     Ok(())
+    /// }
+    /// ```
     pub fn set_timeout(&mut self, timeout: Timeout) {
         let timeout_c = match timeout {
             Timeout::Default => NOTIFY_EXPIRES_DEFAULT,
