@@ -54,6 +54,19 @@ where
 /// Uninitializes libnotify.
 ///
 /// This should be called when the program no longer needs libnotify for the rest of its lifecycle, typically just before exitting.
+///
+/// # Example
+/// ```
+/// use libnotify_rs::api::functions::{init, uninit};
+///
+/// fn main() -> Result<(), Box<dyn std::error::Error>> {
+///     init("Test app")?;
+///     // let notify = ...
+///     uninit(); // __always__ uninit libnotify after use
+///     Ok(())
+/// }
+///
+/// ```
 pub fn uninit() {
     unsafe {
         notify_uninit();
