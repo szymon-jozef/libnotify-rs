@@ -296,6 +296,19 @@ pub fn get_server_info() -> Option<ServerInfo> {
 ///
 /// # Errors
 /// This function can return LibnotifyError::NulError
+///
+/// # Example
+/// ```
+/// use libnotify_rs::api::functions::{get_app_name, init, set_app_name};
+///
+/// fn main() -> Result<(), Box<dyn std::error::Error>> {
+///     init("Test app")?;
+///     let app_name = "morbius app";
+///     set_app_name(app_name)?;
+///     assert_eq!(app_name, get_app_name().unwrap());
+///     Ok(())
+/// }
+/// ```
 pub fn set_app_name(app_name: &str) -> Result<(), LibnotifyError> {
     let app_name_c = std::ffi::CString::new(app_name)?;
     unsafe { notify_set_app_name(app_name_c.as_ptr()) };
