@@ -15,6 +15,19 @@ impl LibnotifyContext {
     /// # Error
     /// Returns an error, if libnotify cannot be initialized or if there already exists a context
     /// object
+    ///
+    /// # Example
+    /// ```
+    /// use libnotify_rs::context::LibnotifyContext;
+    ///
+    /// fn main() -> Result<(), Box<dyn std::error::Error>> {
+    ///     let ctx = LibnotifyContext::new("Coffee addicted reminder")?;
+    ///
+    ///     // you don't need to uninitialize libnotify, cause context already does that!
+    ///
+    ///     Ok(())
+    /// }
+    /// ```
     pub fn new(app_name: &str) -> Result<LibnotifyContext, Box<dyn std::error::Error>> {
         if IS_CONTEXT_CREATED.swap(true, std::sync::atomic::Ordering::SeqCst) {
             return Err("You can create only one context at a time".into());
