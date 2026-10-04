@@ -227,6 +227,41 @@ pub struct ServerInfo {
 
 /// Queries the server for information.
 /// Synchronously queries the server for its information, specifically, the name, vendor, server version, and the version of the notifications specification that it is compliant with.
+///
+/// # Example
+/// ```
+///
+/// use libnotify_rs::api::functions::{self, uninit};
+///
+/// fn main() -> Result<(), Box<dyn std::error::Error>> {
+///     functions::init("Test app")?;
+///
+///     if let Some(info) = functions::get_server_info() {
+///         println!("=== Server info ===");
+///         if let Some(name) = info.name {
+///             println!("Server name: {}", name);
+///         }
+///
+///         if let Some(vendor) = info.vendor {
+///             println!("Server vendor: {}", vendor);
+///         }
+///
+///         if let Some(version) = info.version {
+///             println!("Server version: {}", version);
+///         }
+///
+///         if let Some(spec_version) = info.spec_version {
+///             println!("Server spec version: {}", spec_version);
+///         }
+///     } else {
+///         eprintln!("No server info");
+///     }
+///
+///     uninit();
+///
+///     Ok(())
+/// }
+/// ```
 pub fn get_server_info() -> Option<ServerInfo> {
     let mut ret_name = std::ptr::null_mut() as *mut std::os::raw::c_char;
     let mut ret_vendor = std::ptr::null_mut() as *mut std::os::raw::c_char;
