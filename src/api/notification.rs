@@ -321,7 +321,7 @@ impl<'a> Notification {
     /// icon names.
     ///
     /// If this function is not called, the application icon will be set from the value set via
-    /// `set_app_icon()`.
+    /// `set_app_icon()`. Usage is the same.
     ///
     /// Available since: 0.8.4
     ///
@@ -336,7 +336,7 @@ impl<'a> Notification {
 
     /// Sets the application name for the notification.
     ///
-    /// If this function is not called, the application name will be set from the value used in init() or overridden with set_app_name().
+    /// If this function is not called, the application name will be set from the value used in init() or overridden with set_app_name(). Usage is the same.
     ///
     /// Available since: 0.7.3
     ///
@@ -353,6 +353,8 @@ impl<'a> Notification {
     ///
     /// This can be used by the notification server to filter or display the data in a certain way
     ///
+    /// The only reference to what this even is, is [this thread](https://unix.stackexchange.com/questions/251243/what-do-a-notify-send-notification-category-hint-and-version-parameters-mean). If you know how to use this bad boy, have fun :D
+    ///
     /// # Errors
     /// This function can return LibnotifyError::{NulError}
     pub fn set_category(&mut self, category: &str) -> Result<(), LibnotifyError> {
@@ -365,6 +367,9 @@ impl<'a> Notification {
     /// Sets a hint for key with value value
     ///
     /// Available since: 0.6
+    ///
+    ///
+    /// The only reference to what this even is, is [this thread](https://unix.stackexchange.com/questions/251243/what-do-a-notify-send-notification-category-hint-and-version-parameters-mean). If you know how to use this bad boy, have fun :D
     ///
     /// # Errors
     /// This function can return LibnotifyError::{NulError, AllocationError}
