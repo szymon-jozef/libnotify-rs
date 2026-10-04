@@ -524,6 +524,7 @@ impl Drop for Notification {
     }
 }
 
+/// This function translates c callback to rust. Used in `add_action`
 unsafe extern "C" fn action_trampoline<F>(
     _notification: *mut NotifyNotification,
     action: *mut ::std::os::raw::c_char,
@@ -541,6 +542,7 @@ unsafe extern "C" fn action_trampoline<F>(
     callback(&action);
 }
 
+/// This function tells c how to free memory of our callback
 unsafe extern "C" fn drop_box<F>(data: gpointer) {
     unsafe { drop(Box::from_raw(data as *mut F)) };
 }
